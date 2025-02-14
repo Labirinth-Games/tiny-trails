@@ -1,0 +1,48 @@
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    width: 800px;
+    height: 800px;
+    border: 1px solid black;
+}
+
+.grid-item {
+    border: 1px solid lightgray;
+    text-align: center;
+    font-size: 12px;
+    color: white;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    /* 100% da altura da viewport */
+}
+
+.red {
+    background-color: red;
+}
+
+.green {
+    background-color: green;
+}
+
+.display {
+    color: white;
+    font-size: large;
+}
+
+.notify {
+    margin-top: -3px;
+    text-align: center;
+    height: 3dvh;
+}
+
+body {
+    background-color: #1c1c1c;
+    margin: 0;
+    padding: 0;
+}

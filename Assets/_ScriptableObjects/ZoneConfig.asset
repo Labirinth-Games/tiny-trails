@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c88190033e167841b4da0f31cd4be9e, type: 3}
+  m_Name: ZoneConfig
+  m_EditorClassIdentifier: 
+  minSubZoneSize: 5
+  maxSubZoneSize: 5
+  amountSubZones: 6
+  minSpaceBeetweenSubZones: 1
+  maxSpaceBeetweenSubZones: 1
+  scaleTilePosition: 1
+  canSpawnPlayerTogetherDoor: 0
+  amountEnemies: 0
+  amountTraps: 0
+  amountDoors: 0
+  amountDoorsBySubZone: 0

@@ -1,0 +1,23 @@
+# ninja log v5
+10	2149	7483290716565537	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	d7717d45a95af722
+39	495	7483290699750358	FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o	3638e78f7fe0514d
+496	999	7483290704863955	D:/Games Development/Unity/MyPocketDungeon/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/1t4f132m/obj/arm64-v8a/libswappywrapper.so	9b766f06eb948990
+34	1784	7483290712920915	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	37f8cde250118866
+13	1686	7483290711820926	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	2305afd812d3b66f
+17	1866	7483290713752742	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	9a5d7f5b0b9fd000
+30	1687	7483290711800947	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	e57a1ea45e06d102
+21	1673	7483290711620978	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	cec1e63db41df9ef
+6	1733	7483290712390905	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	701948628fa5a2
+25	2023	7483290715310827	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	56c1eaeba9cafe9
+2149	2316	7483290718176612	D:/Games Development/Unity/MyPocketDungeon/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/1t4f132m/obj/arm64-v8a/libgame.so	56985f697e38ba80
+48	456	7485926115909632	FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o	3638e78f7fe0514d
+457	1066	7485926121830620	D:/Games Development/Unity/MyPocketDungeon/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/1t4f132m/obj/arm64-v8a/libswappywrapper.so	9b766f06eb948990
+24	1766	7485926128783317	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	cec1e63db41df9ef
+29	1777	7485926128993325	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	e57a1ea45e06d102
+6	1791	7485926129123307	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	2305afd812d3b66f
+11	1831	7485926129584469	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	701948628fa5a2
+41	1923	7485926130440076	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	37f8cde250118866
+19	2029	7485926131482653	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	9a5d7f5b0b9fd000
+36	2241	7485926133821777	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	56c1eaeba9cafe9
+15	2404	7485926135415787	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	d7717d45a95af722
+2404	2569	7485926137033537	D:/Games Development/Unity/MyPocketDungeon/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/1t4f132m/obj/arm64-v8a/libgame.so	56985f697e38ba80
