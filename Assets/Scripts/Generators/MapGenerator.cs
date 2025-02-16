@@ -44,7 +44,7 @@ public class MapGenerator : MonoBehaviour
         {
             for (int _i = 0; _i < amountMonsters; _i++)
             {
-                Vector2Int _position = _subZone.GetRandomPosition();
+                Vector2Int _position = _subZone.GetRandomPosition(1);
 
                 _subZone.AddTileLayer(_position, TileType.Enemy);
             }
@@ -65,7 +65,7 @@ public class MapGenerator : MonoBehaviour
     {
         foreach (SubZone _subZone in subZones.FindAll(f => f.RoomType == RoomType.Treasure))
         {
-            Vector2Int _position = _subZone.GetRandomPosition(2);
+            Vector2Int _position = _subZone.GetRandomPosition(1);
 
             _subZone.AddTileLayer(_position, TileType.Chest);
         }
@@ -187,10 +187,10 @@ public class MapGenerator : MonoBehaviour
             if (i == 0)
             {
                 // pegando uma posição do centro para iniciar
-                int _lastPointX = mapZoneGrid.GetLength(0) / 2 - subZone.Width / 2;
-                int _lastPointY = mapZoneGrid.GetLength(1) / 2 - subZone.Height / 2;
+                int centerMapPosX = mapZoneGrid.GetLength(0) / 2 - subZone.Width / 2;
+                int centerMapPosY = mapZoneGrid.GetLength(1) / 2 - subZone.Height / 2;
 
-                subZone.InitialCellGrid = new Vector2Int(_lastPointX, _lastPointY);
+                subZone.CenterPointAbsolute = new Vector2Int(centerMapPosX, centerMapPosY);
 
                 // aplicando a zona nomeio do mapa
                 DrawSubZoneInsideZone(subZone);
@@ -200,15 +200,15 @@ public class MapGenerator : MonoBehaviour
             }
 
             int neighborDistance = Random.Range(_mapConfig.minSpaceBeetweenSubZones, _mapConfig.maxSpaceBeetweenSubZones);
-            (bool hasConflictSubZone, Vector2Int initialPositionNeighbor) directionNeigbor = GetDirectionNeighbor(lastSubZone, subZone, neighborDistance);
+            (bool hasConflictSubZone, Vector2Int centerPoint) directionNeigbor = GetDirectionNeighbor(lastSubZone, subZone, neighborDistance + 1);
 
             if (directionNeigbor.hasConflictSubZone) continue;
 
-            subZone.InitialCellGrid = directionNeigbor.initialPositionNeighbor;
+            subZone.CenterPointAbsolute = directionNeigbor.centerPoint;
 
             DrawSubZoneInsideZone(subZone);
 
-            PathFinder(lastSubZone.CenterPoint, subZone.CenterPoint);
+            PathFinder(lastSubZone.CenterPointAbsolute, subZone.CenterPointAbsolute);
 
             lastSubZone = allSubZones[Random.Range(0, allSubZones.Count)];
         }
@@ -222,13 +222,20 @@ public class MapGenerator : MonoBehaviour
     void DrawSubZoneInsideZone(SubZone subZone)
     {
         Vector2Int relativePosition = Vector2Int.zero;
-        int initalX = subZone.Width / 2
 
-        for (int x = subZone.InitialCellGrid.x; x < subZone.FinalCellGrid.x; x++)
+        // posiçoes do quadrante X
+        int initalPointX = subZone.CenterPointAbsolute.x - subZone.Width / 2;
+        int endPointX = subZone.CenterPointAbsolute.x + subZone.Width / 2;
+
+        // posiçoes do quadrante y
+        int initalPointY = subZone.CenterPointAbsolute.y - subZone.Height / 2;
+        int endPointY = subZone.CenterPointAbsolute.y + subZone.Height / 2;
+
+        for (int x = initalPointX; x <= endPointX; x++)
         {
-            for (int y = subZone.InitialCellGrid.y; y < subZone.FinalCellGrid.y; y++)
+            for (int y = initalPointY; y <= endPointY; y++)
             {
-                if (!IsInsideGrid(x, y, mapZoneGrid) || !IsInsideGrid(relativePosition.x, relativePosition.y, subZone.TileLayersGrid)) continue;
+                if (!IsInsideGrid(x, y, mapZoneGrid)) continue;
 
                 subZone.SetTileAbsolutePosition(relativePosition, new Vector2Int(x, y));
                 mapZoneGrid[x, y] = subZone.GetTileLayerByRelativePosition(relativePosition);
@@ -289,6 +296,11 @@ public class MapGenerator : MonoBehaviour
                 tileLayer.RemoveTile(TileType.Wall);
                 DirectionType doorDirection = DirectionType.None;
 
+                Debug.Log($"Right {string.Join(", ", mapZoneGrid[step.x + 1, step.y].GetTiles().Select(s => s.TileType).ToArray())}");
+                Debug.Log($"Left {string.Join(", ", mapZoneGrid[step.x - 1, step.y].GetTiles().Select(s => s.TileType).ToArray())}");
+                Debug.Log($"Bottom {string.Join(", ", mapZoneGrid[step.x, step.y - 1].GetTiles().Select(s => s.TileType).ToArray())}");
+                Debug.Log($"Top {string.Join(", ", mapZoneGrid[step.x, step.y + 1].GetTiles().Select(s => s.TileType).ToArray())}");
+
                 // direction door
                 if (mapZoneGrid[step.x + 1, step.y].IsEmpty()) // when vertical - right
                     doorDirection = DirectionType.Right;
@@ -300,7 +312,7 @@ public class MapGenerator : MonoBehaviour
                     doorDirection = DirectionType.Top;
 
                 tileLayer.AddTileDoor(doorDirection);
-                tileLayer.DoorNextSubZone = subZones.Find(f => f.CenterPoint == endPoint);
+                tileLayer.DoorNextSubZone = subZones.Find(f => f.CenterPointAbsolute == endPoint);
                 door = tileLayer;
 
                 ways.Add(tileLayer);
@@ -326,18 +338,19 @@ public class MapGenerator : MonoBehaviour
     /// Metodo responsavel por buscar uma direção que possa adicioanr uma nova zona 
     /// que não ocorra sobreposição entre subzonas
     /// </summary>
-    /// <param name="_lastSubZone"></param>
-    /// <param name="_actualSubZone"></param>
-    /// <param name="_neighborDistance"></param>
+    /// <param name="lastSubZone"></param>
+    /// <param name="actualSubZone"></param>
+    /// <param name="neighborDistance"></param>
     /// <returns>Returna uma tupla com o bool informando se encontrou uma posição e a posição em si</returns>
-    (bool hasConflictSubZone, Vector2Int position) GetDirectionNeighbor(SubZone _lastSubZone, SubZone _actualSubZone, int _neighborDistance)
+    (bool hasConflictSubZone, Vector2Int position) GetDirectionNeighbor(SubZone lastSubZone, SubZone actualSubZone, int neighborDistance)
     {
-        List<Vector2Int> _directions = new List<Vector2Int>() {
-                new Vector2Int(_lastSubZone.FinalCellGrid.x - _lastSubZone.Width, _lastSubZone.FinalCellGrid.y + _neighborDistance), // up
-                new Vector2Int(_lastSubZone.FinalCellGrid.x - _lastSubZone.Width, _lastSubZone.FinalCellGrid.y - _lastSubZone.Height - _actualSubZone.Height - _neighborDistance), // down
-                new Vector2Int(_lastSubZone.FinalCellGrid.x - _lastSubZone.Width - _actualSubZone.Width - _neighborDistance, _lastSubZone.FinalCellGrid.y - _lastSubZone.Height), // left
-                new Vector2Int(_lastSubZone.FinalCellGrid.x + _neighborDistance, _lastSubZone.FinalCellGrid.y - _actualSubZone.Height - _lastSubZone.Height), // right
-            };
+        List<DirectionType> directions = new()
+        {
+            DirectionType.Top,
+            DirectionType.Bottom,
+            DirectionType.Left,
+            DirectionType.Right,
+        };
 
         int _attemps = 0;
         int _attempsLimit = 10;
@@ -346,16 +359,41 @@ public class MapGenerator : MonoBehaviour
         {
             if (_attemps > _attempsLimit) break;
 
-            Vector2Int _direction = _directions[Random.Range(0, _directions.Count)];
+            DirectionType direction = directions[Random.Range(0, directions.Count)];
+            Vector2Int newCenterPointer = Vector2Int.zero;
 
-            // TODO - revisar a forma de analise para para procurar outra direção, essa não é tão efetiva e 
-            // acontece de haver sobreposiçao se subZones
-            int _scanDirectionX = _direction.x + _actualSubZone.Width / 4;
-            int _scanDirectionY = _direction.y + _actualSubZone.Height / 4;
+            switch (direction)
+            {
+                case DirectionType.Top:
+                    newCenterPointer = new Vector2Int(
+                        lastSubZone.CenterPointAbsolute.x,
+                        lastSubZone.CenterPointAbsolute.y + lastSubZone.Height / 2 + neighborDistance + actualSubZone.Height / 2
+                    );
+                    break;
+                case DirectionType.Bottom:
+                    newCenterPointer = new Vector2Int(
+                        lastSubZone.CenterPointAbsolute.x,
+                        lastSubZone.CenterPointAbsolute.y - lastSubZone.Height / 2 - neighborDistance - actualSubZone.Height / 2
+                    );
+                    break;
+                case DirectionType.Left:
+                    newCenterPointer = new Vector2Int(
+                        lastSubZone.CenterPointAbsolute.x - lastSubZone.Width / 2 - neighborDistance - actualSubZone.Width / 2,
+                        lastSubZone.CenterPointAbsolute.y
+                    );
+                    break;
+                case DirectionType.Right:
+                    newCenterPointer = new Vector2Int(
+                        lastSubZone.CenterPointAbsolute.x + lastSubZone.Width / 2 + neighborDistance + actualSubZone.Width / 2,
+                        lastSubZone.CenterPointAbsolute.y
+                    );
+                    break;
 
-            if (!IsInsideGrid(_scanDirectionX, _scanDirectionY, mapZoneGrid)) continue;
+            }
 
-            if (mapZoneGrid[_scanDirectionX, _scanDirectionY].IsEmpty()) return (false, _direction);
+            if (!IsInsideGrid(newCenterPointer.x, newCenterPointer.y, mapZoneGrid)) continue; // vendo se ta fora do grid map
+
+            if (mapZoneGrid[newCenterPointer.x, newCenterPointer.y].IsEmpty()) return (false, newCenterPointer);
 
             _attemps++;
         }

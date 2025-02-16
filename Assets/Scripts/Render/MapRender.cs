@@ -171,7 +171,7 @@ namespace TinyTrails.Render
             List<GameObject> instances = new();
             List<TileLayer> trapPositions = zone.TrapsPositions;
 
-            TileLayer orbTileLayer = zone.GetCurrentSubZone().GetRandomTileLayer(2);
+            TileLayer orbTileLayer = zone.GetCurrentSubZone().GetRandomTileLayer(1);
             GameObject orbPrefab = GameManager.Instance.WorldManager.GetOrb();
 
             GameObject orb = Instantiate(orbPrefab, container);

@@ -10,23 +10,6 @@ namespace TinyTrails.Generators
         public int Height { get; set; }
         public Vector2Int CenterPointAbsolute { get; set; }
         public RoomType RoomType { get; set; }
-
-        public Vector2Int CenterPoint
-        {
-            get
-            {
-                return new Vector2Int(InitialCellGrid.x + Width / 2, InitialCellGrid.y + Height / 2);
-            }
-        }
-
-        public Vector2Int InitialCellGrid { get; set; }
-        public Vector2Int FinalCellGrid
-        {
-            get
-            {
-                return new Vector2Int(InitialCellGrid.x + Width, InitialCellGrid.y + Height);
-            }
-        }
         public int AmountDoors { get; set; }
         public bool HasPlayer { get; set; }
 
@@ -72,8 +55,8 @@ namespace TinyTrails.Generators
             {
                 if (attemps > attempsLimit) break;
 
-                int x = Random.Range(distanceToBorder, Width - distanceToBorder);
-                int y = Random.Range(distanceToBorder, Height - distanceToBorder);
+                int x = Random.Range(distanceToBorder + 1, Width - distanceToBorder);
+                int y = Random.Range(distanceToBorder + 1, Height - distanceToBorder);
 
                 TileLayer tileLayer = TileLayersGrid[x, y];
 
@@ -94,8 +77,8 @@ namespace TinyTrails.Generators
             {
                 if (attemps > attempsLimit) break;
 
-                int x = Random.Range(distanceToBorder, Width - distanceToBorder);
-                int y = Random.Range(distanceToBorder, Height - distanceToBorder);
+                int x = Random.Range(distanceToBorder + 1, Width - distanceToBorder);
+                int y = Random.Range(distanceToBorder + 1, Height - distanceToBorder);
 
                 TileLayer tileLayer = TileLayersGrid[x, y];
 
@@ -114,7 +97,7 @@ namespace TinyTrails.Generators
             // int attempsLimit = 10;
             DirectionType direction = DirectionType.None;
 
-            var dir = ((Vector2)CenterPoint - destiny).normalized;
+            var dir = ((Vector2)CenterPointAbsolute - destiny).normalized;
 
             if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
             {
@@ -134,7 +117,7 @@ namespace TinyTrails.Generators
             //     DirectionType.Left,
             // };
 
-            Vector2Int tileLayerBorder = CenterPoint;
+            Vector2Int tileLayerBorder = CenterPointAbsolute;
 
             int x = Random.Range(1, Width - 1);
             int y = Random.Range(1, Height - 1);
