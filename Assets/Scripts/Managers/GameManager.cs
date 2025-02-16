@@ -8,6 +8,7 @@ using TinyTrails.IA;
 using TinyTrails.Render;
 using TinyTrails.SO;
 using TinyTrails.Types;
+using TinyTrails.UI;
 using UnityEngine;
 
 namespace TinyTrails.Managers
@@ -36,6 +37,7 @@ namespace TinyTrails.Managers
         public InventaryManager InventaryManager;
         public WorldManager WorldManager;
         public ContextGameManager ContextGameManager;
+        public AudioManager AudioManager;
         #endregion
 
         #region Controllers
@@ -48,31 +50,57 @@ namespace TinyTrails.Managers
         [Header("Actions")]
         public MoveAction MoveAction;
         public AttackAction AttackAction;
+        public DefenseAction DefenseAction;
         #endregion
 
         [Space()]
         public Player Player;
         public WorldIA WorldIA;
 
+        #region UI
+        [Header("UI")]
+        public ActionPointUI ActionPointUI;
+        public DefenseMeditorUI DefenseMeditorUI;
+        public DiceContainerUI DiceContainerUI;
+        public EndTurnUI EndTurnUI;
+        public FocusMeditorUI FocusMeditorUI;
+        public HPMeditorUI HPMeditorUI;
+        public LogUI LogUI;
+        public ObtainItemUI ObtainItemUI;
+        public TurnLabelUI TurnLabelUI;
+        #endregion
+
         void Start()
         {
+            // UI
+            ActionPointUI.Init();
+            DefenseMeditorUI.Init();
+            DiceContainerUI.Init();
+            EndTurnUI.Init();
+            FocusMeditorUI.Init();
+            HPMeditorUI.Init();
+            LogUI.Init();
+            ObtainItemUI.Init();
+            TurnLabelUI.Init();
+
+            // Managers
             MapManager.CreateMap();
             FocusController.Init(characterSheet.Focus);
             ContextGameManager.Init();
             WorldIA.Init();
 
-            StartCoroutine(WaitToLoad());
-        }
-
-        IEnumerator WaitToLoad() // wait all load before spawn player
-        {
-            yield return new WaitForEndOfFrame();
 
             // spawn player
             Player = Instantiate(characterSheet.body, (Vector2)MapManager.Zone.PlayerPosition.GetAbsolutePosition(), Quaternion.identity).GetComponent<Player>();
             MapManager.Register(Player.transform.position, Player.Tile);
 
             Player.Init();
+
+            // Actions
+            DefenseAction.Init();
+
+            // sounds
+            AudioManager.Init();
         }
     }
 }

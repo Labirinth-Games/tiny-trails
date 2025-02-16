@@ -15,6 +15,9 @@ namespace TinyTrails.UI
         {
             transform.position = position;
             this.OnSelect = OnSelect;
+
+            // animation
+            transform.DOScale(.3f, .3f).From();
         }
 
         #region Event Mouse
@@ -33,11 +36,5 @@ namespace TinyTrails.UI
             overlayerPrefab.SetActive(false);
         }
         #endregion
-
-        private void Start()
-        {
-            // animation
-            transform.DOScale(.3f, .3f).From();
-        }
     }
 }

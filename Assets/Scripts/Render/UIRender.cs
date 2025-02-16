@@ -38,16 +38,58 @@ namespace TinyTrails.Render
             return instance;
         }
 
-        public static GameObject HitUIRender(int damage, Vector2 position)
+        public static GameObject HitPushLabelUIRender(int damage, Vector2 position)
         {
-            var prefab = Resources.Load<GameObject>("UI/hit_ui_prefab");
+            var prefab = Resources.Load<GameObject>("UI/hit_push_label_ui_prefab");
 
             if (prefab == null) return null;
 
             var instance = Instantiate(prefab);
 
-            HitUI hitUI = instance.GetComponent<HitUI>();
-            hitUI.Init(damage, position);
+            PushLabelUI hitUI = instance.GetComponent<PushLabelUI>();
+            hitUI.Init(damage.ToString(), position);
+
+            return instance;
+        }
+
+        public static GameObject FocusPushLabelUIRender(Vector2 position)
+        {
+            var prefab = Resources.Load<GameObject>("UI/focus_push_label_ui_prefab");
+
+            if (prefab == null) return null;
+
+            var instance = Instantiate(prefab);
+
+            PushLabelUI hitUI = instance.GetComponent<PushLabelUI>();
+            hitUI.Init("+", position);
+
+            return instance;
+        }
+
+        public static GameObject HealthPushLabelUIRender(Vector2 position)
+        {
+            var prefab = Resources.Load<GameObject>("UI/heath_push_label_ui_prefab");
+
+            if (prefab == null) return null;
+
+            var instance = Instantiate(prefab);
+
+            PushLabelUI hitUI = instance.GetComponent<PushLabelUI>();
+            hitUI.Init("+", position);
+
+            return instance;
+        }
+
+        public static GameObject DefensePushLabelUIRender(Vector2 position)
+        {
+            var prefab = Resources.Load<GameObject>("UI/defense_push_label_ui_prefab");
+
+            if (prefab == null) return null;
+
+            var instance = Instantiate(prefab);
+
+            PushLabelUI hitUI = instance.GetComponent<PushLabelUI>();
+            hitUI.Init("+", position);
 
             return instance;
         }

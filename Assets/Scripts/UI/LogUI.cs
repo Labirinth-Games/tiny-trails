@@ -16,7 +16,7 @@ namespace TinyTrails.UI
             instance.GetComponent<LogItemUI>().SetMessage(value);
         }
 
-        void Start()
+        public void Init()
         {
             GameManager.Instance.EventManager.Subscriber<string>(EventChannelType.OnUILog, SetMessage);
         }

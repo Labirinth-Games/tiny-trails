@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using TinyTrails.Behaviours;
+using TinyTrails.Generators;
 using TinyTrails.Helpers;
 using TinyTrails.i18n;
 using TinyTrails.Managers;
@@ -35,8 +36,7 @@ namespace TinyTrails.Characters
 
             GameObject.FindWithTag("Camera").GetComponent<CinemachineCamera>().Target.TrackingTarget = transform;
 
-            // reset additional values
-            GameManager.Instance.EventManager.Subscriber<int>(EventChannelType.OnTurnPlayerStart, (val) => AdditionalStrength = 0);
+            // subscribers
             GameManager.Instance.EventManager.Subscriber<Vector2>(EventChannelType.OnActionMove, Move);
             GameManager.Instance.EventManager.Subscriber<Vector2>(EventChannelType.OnActionAttack, Attack);
         }
@@ -49,16 +49,18 @@ namespace TinyTrails.Characters
         #region Actions
         public override void Hit(int damage)
         {
-            _health -= damage;
+            _health -= Stats.Defense - damage;
 
             StartCoroutine(HitBlinkEffect());
 
             // render damage hit
-            UIRender.HitUIRender(damage, transform.position);
+            UIRender.HitPushLabelUIRender(damage, transform.position);
 
             GameManager.Instance.EventManager.Publisher<int>(EventChannelType.OnUIHPChange, _health);
 
             if (_health <= 0) Death();
+
+            base.Hit(damage);
         }
 
         /// <summary>
@@ -85,7 +87,7 @@ namespace TinyTrails.Characters
         public void Move(Vector2 position)
         {
             // TODO - mover usando pathfinder assim fica mais sistematico e legal sem atravesar paredes
-            List<Vector2> steps = GameManager.Instance.MapManager.Pathfinder(transform.position, position);
+            List<Vector2> steps = GameManager.Instance.MapManager.Pathfinder(transform.position, position, (lileLayer) => lileLayer.CanMove());
             StartCoroutine(MoveStep(steps));
         }
 
@@ -94,10 +96,10 @@ namespace TinyTrails.Characters
             foreach (var position in positions)
             {
                 base.MoveTo(position);
+                GameManager.Instance.AudioManager.ActionAudio.PlayerMove();
                 yield return new WaitForSeconds(GameManager.Instance.Settings.VelocityMovementPieces);
             }
 
-            yield return new WaitForSeconds(.5f);
             GameManager.Instance.EventManager.Publisher<ActionPointType>(EventChannelType.OnActionFinish, ActionPointType.Move);
         }
 

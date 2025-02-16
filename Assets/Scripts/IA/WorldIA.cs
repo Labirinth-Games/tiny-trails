@@ -27,6 +27,7 @@ namespace TinyTrails.IA
         {
             _enemies.Add((Enemy)tile.gameObject);
         }
+
         public void EnemyRemove(Enemy enemy)
         {
             _enemies.Remove(enemy);
@@ -43,6 +44,13 @@ namespace TinyTrails.IA
         #region Events
         private void OnStartTurnWorld()
         {
+            if (_enemies.Count == 0)
+            {
+                GameManager.Instance.TurnManager.EndTurn();
+                GameManager.Instance.EventManager.Publisher(EventChannelType.OnContextGameChangeStatus, ContextGameType.Explore);
+                return;
+            }
+
             _enemiesQueue.Clear();
             _enemiesQueue.AddRange(_enemies);
 

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using TinyTrails.Types;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "ZoneConfig", menuName = "ScriptableObjects/ZoneConfig", order = 0)]
@@ -10,6 +12,7 @@ public class ZoneConfigSO : ScriptableObject
     public int minSpaceBeetweenSubZones;
     public int maxSpaceBeetweenSubZones;
     public int scaleTilePosition = 1; // escala aplicada a distancia dos tiles
+    public List<RoomType> roomTypes;
 
     [Header("Player")]
     public bool canSpawnPlayerTogetherDoor;
@@ -18,8 +21,9 @@ public class ZoneConfigSO : ScriptableObject
     [Header("Enemies")]
     public int amountEnemies;
 
-    [Header("Element Scenery")]
-    public int amountTraps;
+    [Header("Traps")]
+    [Range(0f, 1f)]
+    public float amountTraps;
 
     // doors
     [Header("Doors")]

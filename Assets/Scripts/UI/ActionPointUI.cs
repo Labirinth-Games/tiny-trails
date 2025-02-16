@@ -10,7 +10,7 @@ namespace TinyTrails.UI
 
         private void SetActionPoint(int value) => label.text = value.ToString();
 
-        void Start()
+        public void Init()
         {
             SetActionPoint(3);
             GameManager.Instance.EventManager.Subscriber<int>(Types.EventChannelType.OnUIRemainActionPointsChange, SetActionPoint);

@@ -15,10 +15,10 @@ namespace TinyTrails.Actions
     {
         List<GameObject> _instances = new List<GameObject>();
 
-        public void Move()
+        public void Action()
         {
             Player player = GameManager.Instance.Player;
-            List<Vector2> positions = GameManager.Instance.MapManager.GetEmptyAround(player.transform.position, player.Stats.Movement);
+            List<Vector2> positions = GameManager.Instance.MapManager.GetMoveAround(player.transform.position, player.Stats.Movement);
 
             foreach (var position in positions)
             {

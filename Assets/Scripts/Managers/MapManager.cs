@@ -10,6 +10,7 @@ namespace TinyTrails.Managers
 {
     public class MapManager : MonoBehaviour
     {
+        [SerializeField] bool renderAllMap;
         public Zone Zone { get; private set; }
 
         public void CreateMap()
@@ -24,7 +25,9 @@ namespace TinyTrails.Managers
 
         public void MapRender()
         {
-            Zone.LoadTilesSubZonePositions();
+            if (renderAllMap) Zone.LoadAllTilesPositions();
+            else Zone.LoadTilesSubZonePositions();
+
             GameManager.Instance.MapRender.Render(Zone);
         }
 
@@ -142,30 +145,36 @@ namespace TinyTrails.Managers
             return positions;
         }
 
-        public TileLayer GetTile(Vector2 pos) => IsInsideMap(pos) ? Zone.Grid[(int)pos.x, (int)pos.y] : null;
-
-        public TileLayer GetTileRandom()
+        public List<Vector2> GetMoveAround(Vector2 origin, int magnitude)
         {
-            if (Zone.Grid is null) return null;
+            var initialPointX = origin.x - magnitude;
+            var finalPointX = origin.x + magnitude;
+            var initialPointY = origin.y - magnitude;
+            var finalPointY = origin.y + magnitude;
 
-            TileLayer tile;
+            List<Vector2> positions = new List<Vector2>();
 
-            while (true)
+            for (var y = initialPointY; y <= finalPointY; y++)
             {
-                var x = Random.Range(0, Zone.Grid.GetLength(1));
-                var y = Random.Range(0, Zone.Grid.GetLength(0));
-
-                var tileEmpty = GetTile(new Vector2(x, y));
-
-                if (tileEmpty != null && tileEmpty.IsEmpty())
+                for (var x = initialPointX; x <= finalPointX; x++)
                 {
-                    tile = tileEmpty;
-                    break;
+                    if (IsInsideMap(new Vector2(x, y)))
+                    {
+                        var tile = Zone.Grid[(int)x, (int)y];
+
+                        if (tile.CanMove()) positions.Add(new Vector2(x, y));
+                    }
                 }
             }
 
-            return tile;
+            positions.Remove(origin);
+
+            return positions;
         }
+
+        public TileLayer GetTile(Vector2 pos) => IsInsideMap(pos) ? Zone.Grid[(int)pos.x, (int)pos.y] : null;
+
+        public TileLayer GetTileLayerRandom() => Zone.GetCurrentSubZone().GetRandomTileLayer();
 
         public TileLayer[,] GetMapGrid() => Zone.Grid;
         #endregion
@@ -173,7 +182,7 @@ namespace TinyTrails.Managers
         #region Utils
         public bool MoveTile(Vector2 currentPos, Vector2 targetPos, Tile tile)
         {
-            if (IsInsideMap(targetPos) && Zone.Grid[(int)targetPos.x, (int)targetPos.y].HasFloor())
+            if (IsInsideMap(targetPos) && Zone.Grid[(int)targetPos.x, (int)targetPos.y].CanMove())
             {
                 Zone.Grid[(int)currentPos.x, (int)currentPos.y].RemoveTile(tile);
                 Zone.Grid[(int)targetPos.x, (int)targetPos.y].AddTile(tile);
@@ -234,6 +243,69 @@ namespace TinyTrails.Managers
                 // adicionando os caminhos
                 if (tileLayer.HasFloor())
                     steps.Add(tileLayer.GetAbsolutePosition());
+
+                attemps++;
+            }
+
+            return steps;
+        }
+
+        /// <summary>
+        /// Metodo de pathfinder com callback de validação customizada
+        /// </summary>
+        /// <param name="originPosition"></param>
+        /// <param name="destinyPosition"></param>
+        /// <param name="CallbackValidation"></param>
+        /// <returns></returns>
+        public List<Vector2> Pathfinder(Vector2 originPosition, Vector2 destinyPosition, System.Func<TileLayer, bool> CallbackValidation)
+        {
+            Vector2 step = originPosition;
+            Vector2 lastStep = originPosition;
+
+            int attemps = 0;
+            int attempsLimit = 300;
+
+            List<Vector2> steps = new();
+
+            while (true)
+            {
+                if (attemps > attempsLimit) break;
+
+                // direction to move step
+                List<(Vector2 direction, float distance)> directions = new List<(Vector2 direction, float distance)>() {
+                    (step + Vector2.up, Vector2.Distance(destinyPosition, step + Vector2.up)),
+                    (step + Vector2.down, Vector2.Distance(destinyPosition, step + Vector2.down)),
+                    (step + Vector2.left, Vector2.Distance(destinyPosition, step + Vector2.left)),
+                    (step + Vector2.right, Vector2.Distance(destinyPosition, step + Vector2.right)),
+                };
+
+                // filtrando das direcoes possiveis quais que podem ser usadas
+                List<(Vector2 direction, float distance)> directionsWithoutObstacules = new();
+
+                foreach (var direction in directions)
+                {
+                    if (!IsInsideMap(direction.direction)) continue;
+
+                    TileLayer tileLayerDir = Zone.Grid[(int)direction.direction.x, (int)direction.direction.y];
+
+                    if (CallbackValidation(tileLayerDir)) directionsWithoutObstacules.Add(direction);
+                }
+
+                // buscando o menor caminho entre as conhecidas sem obstaculos
+                lastStep = step;
+                step = directionsWithoutObstacules.Find(_direction => _direction.distance == directions.Min(_directionMin => _directionMin.distance)).direction;
+
+                TileLayer tileLayer = Zone.Grid[(int)step.x, (int)step.y];
+
+                // quando chega no destino ele para de fazer o pathfinder
+                if (step == destinyPosition)
+                {
+                    steps.Add(tileLayer.GetAbsolutePosition());
+                    break;
+                }
+
+                // adicionando os caminhos
+                if (CallbackValidation(tileLayer)) steps.Add(tileLayer.GetAbsolutePosition());
 
                 attemps++;
             }

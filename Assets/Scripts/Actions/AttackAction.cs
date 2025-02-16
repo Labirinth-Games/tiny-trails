@@ -13,7 +13,7 @@ namespace TinyTrails.Actions
         private List<GameObject> _instances = new List<GameObject>();
         Player _player;
 
-        public void Attack()
+        public void Action()
         {
             _player = GameManager.Instance.Player;
             List<Vector2> positions = GameManager.Instance.MapManager.GetAttackAround(_player.transform.position, _player.Stats.DistanceAttack);
@@ -37,7 +37,8 @@ namespace TinyTrails.Actions
             }
 
             // mudando o contexto do jogo para modo batalha
-            GameManager.Instance.EventManager.Publisher<ContextGameType>(EventChannelType.OnContextGameChangeStatus, ContextGameType.Battle);
+            if (GameManager.Instance.ContextGameManager.IsExplore())
+                GameManager.Instance.EventManager.Publisher<ContextGameType>(EventChannelType.OnContextGameChangeStatus, ContextGameType.Battle);
 
             tile.gameObject.Hit(_player.Stats.Damage);
 

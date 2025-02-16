@@ -8,6 +8,7 @@ namespace TinyTrails.Generators
     {
         public int Width { get; set; }
         public int Height { get; set; }
+        public Vector2Int CenterPointAbsolute { get; set; }
         public RoomType RoomType { get; set; }
 
         public Vector2Int CenterPoint
@@ -17,6 +18,7 @@ namespace TinyTrails.Generators
                 return new Vector2Int(InitialCellGrid.x + Width / 2, InitialCellGrid.y + Height / 2);
             }
         }
+
         public Vector2Int InitialCellGrid { get; set; }
         public Vector2Int FinalCellGrid
         {
@@ -45,97 +47,120 @@ namespace TinyTrails.Generators
 
         public TileLayer GetTileLayerByRelativePosition(Vector2Int relativePosition) => TileLayersGrid[relativePosition.x, relativePosition.y];
 
-        public TileLayer GetTileLayerByAbsolutePosition(Vector2 absolutePosition)
-        {
-            TileLayer tileLayer = null;
-
-            for (int x = 0; x < TileLayersGrid.GetLength(0); x++)
-                for (int y = 0; y < TileLayersGrid.GetLength(0); y++)
-                {
-                    if (TileLayersGrid[x, y].GetAbsolutePosition() == absolutePosition)
-                    {
-                        return TileLayersGrid[x, y];
-                    }
-                }
-
-            return tileLayer;
-        }
-
         /// <summary>
         /// Adiciona um novo tile na camada da posição passada usando a posição relative
         /// </summary>
-        /// <param name="_relativePosition"></param>
-        /// <param name="_tileType"></param>
-        public void AddTileLayer(Vector2Int _relativePosition, TileType _tileType) => TileLayersGrid[_relativePosition.x, _relativePosition.y].AddTile(_tileType);
-        public void AddTileLayerDoor(Vector2Int _relativePosition, Vector2Int _direction) => TileLayersGrid[_relativePosition.x, _relativePosition.y].AddTileDoor(_direction);
+        /// <param name="relativePosition"></param>
+        /// <param name="tileType"></param>
+        public void AddTileLayer(Vector2Int relativePosition, TileType tileType) => TileLayersGrid[relativePosition.x, relativePosition.y].AddTile(tileType);
+        public void AddTileLayerDoor(Vector2Int relativePosition, DirectionType direction) => TileLayersGrid[relativePosition.x, relativePosition.y].AddTileDoor(direction);
 
         #region Utils
+
         /// <summary>
         /// Metodo para coletar uma posição aleátoria onde tenha pelo menos
         /// um chão no local
         /// </summary>
-        /// <param name="ruleCallback"></param>
+        /// <param name="distanceToBorder">quantidade de quadrados de distancia da borda da zona a posisao será gerada</param>
         /// <returns></returns>
-        public Vector2Int GetRandomPosition()
+        public Vector2Int GetRandomPosition(int distanceToBorder = 0)
         {
-            int _attemps = 0;
-            int _attempsLimit = 40;
+            int attemps = 0;
+            int attempsLimit = 40;
 
             while (true)
             {
-                if (_attemps > _attempsLimit) break;
+                if (attemps > attempsLimit) break;
 
-                int _x = Random.Range(0, Width);
-                int _y = Random.Range(0, Height);
+                int x = Random.Range(distanceToBorder, Width - distanceToBorder);
+                int y = Random.Range(distanceToBorder, Height - distanceToBorder);
 
-                TileLayer _tileLayer = TileLayersGrid[_x, _y];
+                TileLayer tileLayer = TileLayersGrid[x, y];
 
-                if (_tileLayer.CanSpawn()) return _tileLayer.GetRelativePosition();
+                if (tileLayer.CanSpawn()) return tileLayer.GetRelativePosition();
 
-                _attemps++;
+                attemps++;
             }
 
             return Vector2Int.zero;
         }
 
-        public (Vector2Int position, Vector2Int direction) GetRandomPositionEmptyInBorder()
+        public TileLayer GetRandomTileLayer(int distanceToBorder = 0)
         {
-            // contolador de tentativas para coletar uma posiçao vazia
-            int _attemps = 0;
-            int _attempsLimit = 10;
-
-            List<Vector2Int> _directions = new List<Vector2Int>() {
-                Vector2Int.up,
-                Vector2Int.down,
-                Vector2Int.right,
-                Vector2Int.left,
-            };
+            int attemps = 0;
+            int attempsLimit = 40;
 
             while (true)
             {
-                if (_attemps > _attempsLimit) break;
+                if (attemps > attempsLimit) break;
 
-                Vector2Int _direction = _directions[Random.Range(0, _directions.Count)];
-                TileLayer _tileLayerBorder = null;
+                int x = Random.Range(distanceToBorder, Width - distanceToBorder);
+                int y = Random.Range(distanceToBorder, Height - distanceToBorder);
 
-                int _x = Random.Range(1, Width - 1);
-                int _y = Random.Range(1, Height - 1);
+                TileLayer tileLayer = TileLayersGrid[x, y];
 
-                if (_direction == Vector2Int.up)
-                    _tileLayerBorder = TileLayersGrid[_x, Height - 1];
-                else if (_direction == Vector2Int.down)
-                    _tileLayerBorder = TileLayersGrid[_x, 0];
-                else if (_direction == Vector2Int.left)
-                    _tileLayerBorder = TileLayersGrid[0, _y];
-                else if (_direction == Vector2Int.right)
-                    _tileLayerBorder = TileLayersGrid[Width - 1, _y];
+                if (tileLayer.CanSpawn()) return tileLayer;
 
-                if (_tileLayerBorder.HasFloor()) return (_tileLayerBorder.GetRelativePosition(), _direction * -1);
-
-                _attemps++;
+                attemps++;
             }
 
-            return (Vector2Int.one * -1, Vector2Int.one * -1);
+            return null;
+        }
+
+        public (Vector2Int position, DirectionType direction) GetRandomPositionInBorder(Vector2 destiny)
+        {
+            // contolador de tentativas para coletar uma posiçao vazia
+            // int attemps = 0;
+            // int attempsLimit = 10;
+            DirectionType direction = DirectionType.None;
+
+            var dir = ((Vector2)CenterPoint - destiny).normalized;
+
+            if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+            {
+                if (dir.x > 0) direction = DirectionType.Right;
+                if (dir.x < 0) direction = DirectionType.Left;
+            }
+            else
+            {
+                if (dir.y > 0) direction = DirectionType.Top;
+                if (dir.y < 0) direction = DirectionType.Bottom;
+            }
+
+            // List<DirectionType> directions = new() {
+            //     DirectionType.Top,
+            //     DirectionType.Bottom,
+            //     DirectionType.Right,
+            //     DirectionType.Left,
+            // };
+
+            Vector2Int tileLayerBorder = CenterPoint;
+
+            int x = Random.Range(1, Width - 1);
+            int y = Random.Range(1, Height - 1);
+
+            if (direction == DirectionType.Top)
+            {
+                tileLayerBorder.x = x;
+                tileLayerBorder.y += Height / 2;
+            }
+            else if (direction == DirectionType.Bottom)
+            {
+                tileLayerBorder.x = x;
+                tileLayerBorder.y -= Height / 2;
+            }
+            else if (direction == DirectionType.Left)
+            {
+                tileLayerBorder.x = Width / 2;
+                tileLayerBorder.y -= y;
+            }
+            else if (direction == DirectionType.Right)
+            {
+                tileLayerBorder.x = Width / 2;
+                tileLayerBorder.y += y;
+            }
+
+            return (tileLayerBorder, direction);
         }
         #endregion
     }

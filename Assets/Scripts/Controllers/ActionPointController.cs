@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using TinyTrails.Characters;
 using TinyTrails.i18n;
 using TinyTrails.Managers;
+using TinyTrails.Render;
 using TinyTrails.Types;
 using UnityEngine;
 
@@ -13,18 +14,55 @@ namespace TinyTrails.Controllers
 
         Player _player;
         int _actionPoints;
-        ActionPointType _currentActionPointType;
+        (ActionPointType actionType, bool isFinish) _currentAction;
+        int _focusUsedInTurn;
+        int _defenseUsedInTurn;
 
         #region Validation
-        bool CanApplyAction()
+        bool CanApplyAction(ActionPointType actionPointType)
         {
+            if (!GameManager.Instance.TurnManager.IsTurnPlayer()) return false;
+
+            if (_currentAction.actionType == actionPointType && !_currentAction.isFinish) return false;
+
+            if (!_currentAction.isFinish) return false;
+
+            // in batte fail
+            if (GameManager.Instance.ContextGameManager.IsBattle() && _actionPoints <= 0)
+            {
+                GameManager.Instance.EventManager.Publisher<string>(EventChannelType.OnUILog, MessageError.ACTION_POINT_EMPTY);
+                GameManager.Instance.AudioManager.UIAudio.OutResources();
+                return false;
+            }
+
+            if (GameManager.Instance.ContextGameManager.IsBattle() && actionPointType == ActionPointType.Concentrate && _focusUsedInTurn >= GameManager.Instance.Settings.limitFocusCanUseByTurn)
+            {
+                GameManager.Instance.EventManager.Publisher<string>(EventChannelType.OnUILog, MessageError.LIMIT_USAGE_FOCUS);
+                GameManager.Instance.AudioManager.UIAudio.OutResources();
+                return false;
+            }
+
+            if (GameManager.Instance.ContextGameManager.IsBattle() && actionPointType == ActionPointType.Defense && _defenseUsedInTurn >= GameManager.Instance.Settings.limitDefenseCanUseByTurn)
+            {
+                GameManager.Instance.EventManager.Publisher<string>(EventChannelType.OnUILog, MessageError.LIMIT_USAGE_DEFENSE);
+                GameManager.Instance.AudioManager.UIAudio.OutResources();
+                return false;
+            }
+
+            if (GameManager.Instance.ContextGameManager.IsBattle() && actionPointType != ActionPointType.Concentrate && !GameManager.Instance.FocusController.CanUseFocus())
+            {
+                GameManager.Instance.EventManager.Publisher<string>(EventChannelType.OnUILog, MessageError.INSUFFICIENT_FOCUS);
+                GameManager.Instance.AudioManager.UIAudio.OutResources();
+                return false;
+            }
+
             // in explore sucess
             List<ActionPointType> actionInExplore = new() {
                 ActionPointType.Attack,
                 ActionPointType.Move,
             };
 
-            if (GameManager.Instance.ContextGameManager.IsExplore() && actionInExplore.Contains(_currentActionPointType)) return true;
+            if (GameManager.Instance.ContextGameManager.IsExplore() && actionInExplore.Contains(actionPointType)) return true;
 
             // in battle sucess
             List<ActionPointType> actionInBattle = new() {
@@ -35,15 +73,7 @@ namespace TinyTrails.Controllers
                 ActionPointType.HeroicAction,
             };
 
-            if (GameManager.Instance.ContextGameManager.IsBattle() && actionInBattle.Contains(_currentActionPointType)) return true;
-
-
-            // in batte fail
-            if (GameManager.Instance.ContextGameManager.IsBattle() && _actionPoints <= 0)
-                GameManager.Instance.EventManager.Publisher<string>(EventChannelType.OnUILog, MessageError.ACTION_POINT_EMPTY);
-
-            if (GameManager.Instance.ContextGameManager.IsBattle() && !GameManager.Instance.FocusController.CanUseFocus())
-                GameManager.Instance.EventManager.Publisher<string>(EventChannelType.OnUILog, MessageError.INSUFFICIENT_FOCUS);
+            if (GameManager.Instance.ContextGameManager.IsBattle() && actionInBattle.Contains(actionPointType)) return true;
 
             return false;
         }
@@ -54,14 +84,18 @@ namespace TinyTrails.Controllers
         {
             // reset actions
             _actionPoints = maxActionPoints;
+            _focusUsedInTurn = 0;
+            _defenseUsedInTurn = 0;
+
+            GameManager.Instance.EventManager.Publisher<int>(EventChannelType.OnFocusAdd, 1); // ganha 1 foco quando começa o turno
 
             GameManager.Instance.EventManager.Publisher<int>(EventChannelType.OnUIRemainActionPointsChange, _actionPoints);
         }
 
         void OnActionPointUsed(ActionPointType actionPointType)
         {
-            if (actionPointType == _currentActionPointType)
-                _currentActionPointType = ActionPointType.None;
+            _currentAction.isFinish = true;
+            _currentAction.actionType = ActionPointType.None;
 
             if (GameManager.Instance.ContextGameManager.IsExplore()) return;
 
@@ -77,41 +111,64 @@ namespace TinyTrails.Controllers
         #region Button
         public void MoveActionButton()
         {
-            _currentActionPointType = ActionPointType.Move;
-
-            bool canApplyAction = CanApplyAction();
+            bool canApplyAction = CanApplyAction(ActionPointType.Move);
 
             if (!canApplyAction) return;
 
-            GameManager.Instance.MoveAction.Move();
+            _currentAction.actionType = ActionPointType.Move;
+            _currentAction.isFinish = false;
+
+            GameManager.Instance.MoveAction.Action();
         }
 
         public void AttackActionButton()
         {
-            _currentActionPointType = ActionPointType.Attack;
 
-            bool canApplyAction = CanApplyAction();
+            bool canApplyAction = CanApplyAction(ActionPointType.Attack);
 
             if (!canApplyAction) return;
 
-            GameManager.Instance.AttackAction.Attack();
+            _currentAction.isFinish = false;
+            _currentAction.actionType = ActionPointType.Attack;
+
+            GameManager.Instance.AttackAction.Action();
+        }
+
+        public void DefenseActionButton()
+        {
+
+            bool canApplyAction = CanApplyAction(ActionPointType.Defense);
+
+            if (!canApplyAction) return;
+
+            _currentAction.isFinish = false;
+            _currentAction.actionType = ActionPointType.Defense;
+
+            GameManager.Instance.DefenseAction.Action();
         }
 
         public void HeroicActionButton()
         {
+            // _stateAction.isFinish = false;
+            // _stateAction.actionType = ActionPointType.HeroicAction;
+
             GameManager.Instance.EventManager.Publisher<string>(EventChannelType.OnUILog, MessageError.ACTION_POINT_EMPTY);
         }
 
         public void FocusActionButton()
         {
-            _currentActionPointType = ActionPointType.Concentrate;
 
-            bool canApplyAction = CanApplyAction();
+            bool canApplyAction = CanApplyAction(ActionPointType.Concentrate);
 
             if (!canApplyAction) return;
 
+            _currentAction.isFinish = false;
+            _currentAction.actionType = ActionPointType.Concentrate;
+            _focusUsedInTurn += 1;
 
             GameManager.Instance.EventManager.Publisher<int>(EventChannelType.OnFocusAdd, 1);
+
+            UIRender.FocusPushLabelUIRender(GameManager.Instance.Player.transform.position);
 
             OnActionPointUsed(ActionPointType.Concentrate);
         }
@@ -121,6 +178,9 @@ namespace TinyTrails.Controllers
         {
             _player = GameManager.Instance.Player;
             _actionPoints = maxActionPoints;
+            _currentAction = (ActionPointType.None, true);
+            _focusUsedInTurn = 0;
+            _defenseUsedInTurn = 0;
 
             GameManager.Instance.EventManager.Publisher<int>(EventChannelType.OnUIRemainActionPointsChange, maxActionPoints);
 

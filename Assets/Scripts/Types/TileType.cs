@@ -11,6 +11,7 @@ namespace TinyTrails.Types {
         Exit,
         Chest,
         Way,
-        Trap
+        Trap,
+        Boss,
     }
 }

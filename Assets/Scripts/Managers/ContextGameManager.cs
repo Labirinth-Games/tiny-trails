@@ -15,12 +15,14 @@ namespace TinyTrails.Managers
             GameManager.Instance.EventManager.Subscriber<ContextGameType>(EventChannelType.OnContextGameChangeStatus, OnChangeContextGame);
         }
 
+        public void StartBattle() => _currentContextGame = ContextGameType.Battle;
+
         void OnChangeContextGame(ContextGameType context)
         {
             if (context == _currentContextGame) return;
 
             Debug.Log($"Change context game to {context}");
-            
+
             _currentContextGame = context;
         }
 

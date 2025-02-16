@@ -24,6 +24,13 @@ namespace TinyTrails.SO
         [Header("Enemies")]
         public float enemyWaitSecondsToNextAction;
 
+
+        [Space()]
+        [Header("Chest")]
+        public float chanceSpawnEnemiesWhenOpenChest = .25f;
+        public int amountSpawnEnemiesWhenOpenChest = 2;
+
+
         [Space()]
         [Header("World")]
         public float VelocityMovementPieces = .5f;
@@ -45,5 +52,9 @@ namespace TinyTrails.SO
         public int costFocusToItem = 1;
         public int costFocusToConcentrate = 0;
 
+        [Space()]
+        [Header("Gameplay Actions")]
+        public int limitFocusCanUseByTurn = 1;
+        public int limitDefenseCanUseByTurn = 1;
     }
 }

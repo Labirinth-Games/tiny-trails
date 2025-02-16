@@ -18,7 +18,7 @@ namespace TinyTrails.UI
             instance.GetComponent<DiceItemUI>().SetValue(value);
         }
 
-        private void Start()
+        public void Init()
         {
             GameManager.Instance.EventManager.Subscriber<int>(EventChannelType.OnUIRollDiceNotification, OnNotification);
         }

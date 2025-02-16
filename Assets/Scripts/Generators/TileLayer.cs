@@ -1,21 +1,18 @@
 using System.Collections.Generic;
 using System.Linq;
-using DG.Tweening;
 using TinyTrails.DTO;
-using TinyTrails.Managers;
 using TinyTrails.Types;
 using UnityEngine;
 
 namespace TinyTrails.Generators
 {
-
     public class TileLayer
     {
-        public Vector2Int DoorDirection { get; private set; }
+        public DirectionType DoorDirection { get; private set; }
         public SubZone DoorNextSubZone { get; set; }
         public List<TileLayer> WaysBetweenSubZone { get; set; }
 
-        public Vector2Int WallDirection { get; private set; }
+        public DirectionType WallDirection { get; private set; }
 
         // posição dentro da sub zona
         Vector2Int relativePosition;
@@ -75,16 +72,16 @@ namespace TinyTrails.Generators
 
         public void ClearTiles() => tiles.Clear();
 
-        public void AddTileDoor(Vector2Int _direction)
+        public void AddTileDoor(DirectionType direction)
         {
             Tile tile = new Tile();
             tile.SetTileType(TileType.Door);
 
             tiles.Add(tile);
-            DoorDirection = _direction;
+            DoorDirection = direction;
         }
 
-        public void AddTileWall(Vector2Int direction)
+        public void AddTileWall(DirectionType direction)
         {
             Tile tile = new Tile();
             tile.SetTileType(TileType.Wall);
@@ -98,7 +95,7 @@ namespace TinyTrails.Generators
 
         public void SetRelativePosition(Vector2Int _relativePosition) => this.relativePosition = _relativePosition;
 
-        public void SetWallDirection(Vector2Int direction) => WallDirection = direction;
+        public void SetWallDirection(DirectionType direction) => WallDirection = direction;
 
         public Vector2Int GetAbsolutePosition() => absolutePosition;
 
@@ -111,13 +108,14 @@ namespace TinyTrails.Generators
         #endregion
 
         #region Validators
+        public bool IsEmpty() => tiles.Count == 0;
         public bool HasFloor() => tiles.Exists(f => f.TileType == TileType.Floor || f.TileType == TileType.Way) && tiles.Count == 1;
-        public bool CanSpawn() => !new List<TileType>() { TileType.Enemy, TileType.Door, TileType.Way, TileType.Player }.Any(type => tiles.Exists(f => f.TileType == type)) && tiles.Exists(f => f.TileType == TileType.Floor);
         public bool HasObstacle() => new List<TileType>() { TileType.Door, TileType.Wall }.Any(type => tiles.Exists(f => f.TileType == type));
         public bool HasDoor() => tiles.Exists(f => f.TileType == TileType.Door);
-        public bool CanAttack() => tiles.Exists(f => f.TileType == TileType.Enemy || f.TileType == TileType.Floor || f.TileType == TileType.Way);
         public bool HasTile(TileType _tileType) => tiles.Exists(f => f.TileType == _tileType);
-        public bool IsEmpty() => tiles.Count == 0;
+        public bool CanSpawn() => !new List<TileType>() { TileType.Enemy, TileType.Door, TileType.Way, TileType.Player }.Any(type => tiles.Exists(f => f.TileType == type)) && tiles.Exists(f => f.TileType == TileType.Floor);
+        public bool CanAttack() => tiles.Exists(f => f.TileType == TileType.Enemy || f.TileType == TileType.Floor || f.TileType == TileType.Way);
+        public bool CanMove() => tiles.Exists(f => f.TileType == TileType.Floor || f.TileType == TileType.Trap || f.TileType == TileType.Way);
         #endregion
     }
 }

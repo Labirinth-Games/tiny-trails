@@ -17,6 +17,10 @@ namespace TinyTrails.Enemies
     {
         [SerializeField] private EnemySO stats;
 
+        [Header("Audios")]
+        [SerializeField] List<AudioClip> moveStepAudios;
+        [SerializeField] List<AudioClip> attackAudios;
+
         public EnemySO Stats { get; private set; }
 
         bool _isFinishAction;
@@ -63,9 +67,11 @@ namespace TinyTrails.Enemies
             StartCoroutine(HitBlinkEffect());
 
             // render damage hit
-            UIRender.HitUIRender(damage, transform.position);
+            UIRender.HitPushLabelUIRender(damage, transform.position);
 
             if (Stats.hp <= 0) Death();
+
+            base.Hit(damage);
         }
 
         /// <summary>
@@ -108,6 +114,9 @@ namespace TinyTrails.Enemies
             foreach (var position in positions)
             {
                 base.MoveTo(position);
+                
+                GameManager.Instance.AudioManager.Play(moveStepAudios[Random.Range(0, moveStepAudios.Count)]);
+
                 yield return new WaitForSeconds(GameManager.Instance.Settings.VelocityMovementPieces);
             }
 

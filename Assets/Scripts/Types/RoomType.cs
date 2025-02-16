@@ -4,5 +4,6 @@ namespace TinyTrails.Types {
         Trap,
         Treasure,
         Enemy,
+        Boss,
     }
 }

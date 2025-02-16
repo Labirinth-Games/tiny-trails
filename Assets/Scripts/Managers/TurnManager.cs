@@ -11,10 +11,16 @@ namespace TinyTrails.Managers
 
         public void EndTurn()
         {
-            if(_isPlayerTurn) GameManager.Instance.EventManager.Publisher(EventChannelType.OnTurnWorldStart);
-            else GameManager.Instance.EventManager.Publisher(EventChannelType.OnTurnPlayerStart);
+            if (_isPlayerTurn)
+            {
+                _isPlayerTurn = false;
+                GameManager.Instance.EventManager.Publisher(EventChannelType.OnTurnWorldStart);
 
-            _isPlayerTurn = !_isPlayerTurn;
+                return;
+            }
+
+            _isPlayerTurn = true;
+            GameManager.Instance.EventManager.Publisher(EventChannelType.OnTurnPlayerStart);
         }
     }
 }

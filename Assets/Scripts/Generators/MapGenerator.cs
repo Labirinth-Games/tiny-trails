@@ -19,9 +19,9 @@ public class MapGenerator : MonoBehaviour
         // apply elements inside subZones
         EnemySpawnPoints(_zoneConfig);
         TreasureSpawnPoints(_zoneConfig);
-        // DoorSpawnPoints(_zoneConfig);
         PlayerSpawnPoint(_zoneConfig);
-        // TrapSpawnPoint(_zoneConfig);
+        TrapSpawnPoint(_zoneConfig);
+        BossSpawnPoints(_zoneConfig);
 
         // connect all subzones and apply inside zone;
         ConnectSubZones(_zoneConfig);
@@ -51,41 +51,51 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    void BossSpawnPoints(ZoneConfigSO _zoneConfig)
+    {
+        foreach (SubZone _subZone in subZones.FindAll(f => f.RoomType == RoomType.Boss))
+        {
+            Vector2Int _position = _subZone.GetRandomPosition();
+
+            _subZone.AddTileLayer(_position, TileType.Boss);
+        }
+    }
+
     void TreasureSpawnPoints(ZoneConfigSO _zoneConfig)
     {
         foreach (SubZone _subZone in subZones.FindAll(f => f.RoomType == RoomType.Treasure))
         {
-            Vector2Int _position = _subZone.GetRandomPosition();
+            Vector2Int _position = _subZone.GetRandomPosition(2);
 
             _subZone.AddTileLayer(_position, TileType.Chest);
         }
     }
 
-    void DoorSpawnPoints(ZoneConfigSO _zoneConfig)
-    {
-        int _attemps = 0;
-        int _attempsLimit = 20;
-        int _amountDoorsInMap = 0;
+    // void DoorSpawnPoints(ZoneConfigSO _zoneConfig)
+    // {
+    //     int _attemps = 0;
+    //     int _attempsLimit = 20;
+    //     int _amountDoorsInMap = 0;
 
-        if (_zoneConfig.amountDoorsBySubZone == 0) return;
+    //     if (_zoneConfig.amountDoorsBySubZone == 0) return;
 
-        while (_amountDoorsInMap < _zoneConfig.amountDoors)
-        {
-            if (_attemps > _attempsLimit) break;
+    //     while (_amountDoorsInMap < _zoneConfig.amountDoors)
+    //     {
+    //         if (_attemps > _attempsLimit) break;
 
-            SubZone _subZone = subZones[Random.Range(0, subZones.Count)];
+    //         SubZone _subZone = subZones[Random.Range(0, subZones.Count)];
 
-            if (_subZone.AmountDoors > _zoneConfig.amountDoorsBySubZone) continue;
+    //         if (_subZone.AmountDoors > _zoneConfig.amountDoorsBySubZone) continue;
 
-            (Vector2Int position, Vector2Int direction) _tileLayerPosition = _subZone.GetRandomPositionEmptyInBorder();
+    //         (Vector2Int position, DirectionType direction) tileLayerPosition = _subZone.GetRandomPositionEmptyInBorder();
 
-            _subZone.AmountDoors += 1;
-            _subZone.AddTileLayerDoor(_tileLayerPosition.position, _tileLayerPosition.direction);
+    //         _subZone.AmountDoors += 1;
+    //         _subZone.AddTileLayerDoor(tileLayerPosition.position, tileLayerPosition.direction);
 
-            _amountDoorsInMap++;
-            _attemps++;
-        }
-    }
+    //         _amountDoorsInMap++;
+    //         _attemps++;
+    //     }
+    // }
 
     void PlayerSpawnPoint(ZoneConfigSO _zoneConfig)
     {
@@ -97,22 +107,18 @@ public class MapGenerator : MonoBehaviour
         _subZone.AddTileLayer(_position, TileType.Player);
     }
 
-    void TrapSpawnPoint(ZoneConfigSO _zoneConfig)
+    void TrapSpawnPoint(ZoneConfigSO zoneConfig)
     {
-        int _amountElementsBySubZone = _zoneConfig.amountTraps / subZones.Count;
-        int _remainElementMap = _zoneConfig.amountTraps;
 
-        foreach (SubZone _subZone in subZones)
+        foreach (SubZone subZone in subZones.FindAll(f => f.RoomType == RoomType.Trap))
         {
-            for (int _i = 0; _i < _amountElementsBySubZone; _i++)
+            int amountTraps = Mathf.FloorToInt((subZone.Width * subZone.Height) * zoneConfig.amountTraps);
+
+            for (int i = 0; i < amountTraps; i++)
             {
-                if (_remainElementMap <= 0) break;
+                Vector2Int position = subZone.GetRandomPosition();
 
-                Vector2Int _position = _subZone.GetRandomPosition();
-
-                _subZone.AddTileLayer(_position, TileType.Trap);
-
-                _remainElementMap -= 1;
+                subZone.AddTileLayer(position, TileType.Trap);
             }
         }
     }
@@ -122,7 +128,7 @@ public class MapGenerator : MonoBehaviour
     void CreateZone(ZoneConfigSO mapConfig)
     {
         // map zone real
-        int zoneSize = mapConfig.amountSubZones * mapConfig.maxSubZoneSize + 1;
+        int zoneSize = (mapConfig.amountSubZones + 1) * mapConfig.maxSubZoneSize * 2;
         mapZoneGrid = CreateGridTiles(zoneSize, zoneSize, TileType.None);
     }
 
@@ -133,7 +139,7 @@ public class MapGenerator : MonoBehaviour
             int width = Random.Range(zoneConfig.minSubZoneSize, zoneConfig.maxSubZoneSize) + 2; // +2 pq é o tamanho das bordas onde iram ficar as paredes
             int height = Random.Range(zoneConfig.minSubZoneSize, zoneConfig.maxSubZoneSize) + 2;
 
-            RoomType roomType = RoomType.Enemy; //(RoomType)System.Enum.GetValues(typeof(RoomType)).GetValue(Random.Range(1, System.Enum.GetNames(typeof(RoomType)).Length)); // começa de 1 para que o "none" n saia
+            RoomType roomType = zoneConfig.roomTypes[Random.Range(0, zoneConfig.roomTypes.Count)];
 
             SubZone subZone = new SubZone()
             {
@@ -145,6 +151,20 @@ public class MapGenerator : MonoBehaviour
 
             subZones.Add(subZone);
         }
+
+        // create zone boss
+        int widthZoneBoss = (int)Random.Range(zoneConfig.minSubZoneSize * 1.5f, zoneConfig.maxSubZoneSize * 1.5f) + 2; // +2 pq é o tamanho das bordas onde iram ficar as paredes
+        int heightZoneBoss = (int)Random.Range(zoneConfig.minSubZoneSize * 1.5f, zoneConfig.maxSubZoneSize * 1.5f) + 2;
+
+        SubZone subZoneBoss = new SubZone()
+        {
+            Width = widthZoneBoss,
+            Height = heightZoneBoss,
+            RoomType = RoomType.Boss,
+            TileLayersGrid = CreateSubZoneGrid(widthZoneBoss, heightZoneBoss),
+        };
+
+        subZones.Add(subZoneBoss);
     }
 
     /// <summary>
@@ -202,6 +222,7 @@ public class MapGenerator : MonoBehaviour
     void DrawSubZoneInsideZone(SubZone subZone)
     {
         Vector2Int relativePosition = Vector2Int.zero;
+        int initalX = subZone.Width / 2
 
         for (int x = subZone.InitialCellGrid.x; x < subZone.FinalCellGrid.x; x++)
         {
@@ -266,14 +287,17 @@ public class MapGenerator : MonoBehaviour
             if (tileLayer.HasTile(TileType.Wall))
             {
                 tileLayer.RemoveTile(TileType.Wall);
-                Vector2Int doorDirection = Vector2Int.zero;
+                DirectionType doorDirection = DirectionType.None;
 
                 // direction door
-                if (mapZoneGrid[step.x + 1, step.y].IsEmpty() || mapZoneGrid[step.x - 1, step.y].IsEmpty()) // when vertical
-                    doorDirection = Vector2Int.up;
+                if (mapZoneGrid[step.x + 1, step.y].IsEmpty()) // when vertical - right
+                    doorDirection = DirectionType.Right;
+
+                if (mapZoneGrid[step.x - 1, step.y].IsEmpty()) // when vertical - left
+                    doorDirection = DirectionType.Left;
 
                 if (mapZoneGrid[step.x, step.y + 1].IsEmpty() || mapZoneGrid[step.x, step.y - 1].IsEmpty()) // when horizontal
-                    doorDirection = Vector2Int.right;
+                    doorDirection = DirectionType.Top;
 
                 tileLayer.AddTileDoor(doorDirection);
                 tileLayer.DoorNextSubZone = subZones.Find(f => f.CenterPoint == endPoint);
@@ -306,7 +330,7 @@ public class MapGenerator : MonoBehaviour
     /// <param name="_actualSubZone"></param>
     /// <param name="_neighborDistance"></param>
     /// <returns>Returna uma tupla com o bool informando se encontrou uma posição e a posição em si</returns>
-    (bool, Vector2Int) GetDirectionNeighbor(SubZone _lastSubZone, SubZone _actualSubZone, int _neighborDistance)
+    (bool hasConflictSubZone, Vector2Int position) GetDirectionNeighbor(SubZone _lastSubZone, SubZone _actualSubZone, int _neighborDistance)
     {
         List<Vector2Int> _directions = new List<Vector2Int>() {
                 new Vector2Int(_lastSubZone.FinalCellGrid.x - _lastSubZone.Width, _lastSubZone.FinalCellGrid.y + _neighborDistance), // up
@@ -326,12 +350,12 @@ public class MapGenerator : MonoBehaviour
 
             // TODO - revisar a forma de analise para para procurar outra direção, essa não é tão efetiva e 
             // acontece de haver sobreposiçao se subZones
-            int _scanDirectionX = _direction.x + _actualSubZone.Width / 3;
-            int _scanDirectionY = _direction.y + _actualSubZone.Height / 3;
+            int _scanDirectionX = _direction.x + _actualSubZone.Width / 4;
+            int _scanDirectionY = _direction.y + _actualSubZone.Height / 4;
 
             if (!IsInsideGrid(_scanDirectionX, _scanDirectionY, mapZoneGrid)) continue;
 
-            if (!mapZoneGrid[_scanDirectionX, _scanDirectionY].HasFloor()) return (false, _direction);
+            if (mapZoneGrid[_scanDirectionX, _scanDirectionY].IsEmpty()) return (false, _direction);
 
             _attemps++;
         }
@@ -364,18 +388,18 @@ public class MapGenerator : MonoBehaviour
         {
             for (int y = 0; y < height; y++)
             {
-                if (y == 0 || y == height - 1) // adicionando parede left/right
+                if (y == 0 || y == height - 1) // adicionando parede top/down
                 {
                     TileLayer tileLayer = new TileLayer(new Vector2Int(x, y), TileType.Wall);
-                    tileLayer.SetWallDirection(Vector2Int.up);
+                    tileLayer.SetWallDirection(DirectionType.Top);
                     tileLayerGrid[x, y] = tileLayer;
                 }
-                else if (x == 0 || x == width - 1) // adicionando parede top/down
+                else if (x == 0 || x == width - 1) // adicionando parede left/right
                 {
-                    // var isCorner = x == 0 && y == 0 || x == width - 1 && y == 0;
+                    // var isCorner = x == 0 && y == 0 || x == width - 1 && y == 0; TODO fazer a analise para colocar as quinas
 
                     TileLayer tileLayer = new TileLayer(new Vector2Int(x, y), TileType.Wall);
-                    tileLayer.SetWallDirection(x == 0 ? Vector2Int.left : Vector2Int.right);
+                    tileLayer.SetWallDirection(x == 0 ? DirectionType.Left : DirectionType.Right);
                     tileLayerGrid[x, y] = tileLayer;
                 }
                 else

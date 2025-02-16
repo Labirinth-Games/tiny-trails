@@ -4,16 +4,16 @@ using TMPro;
 
 namespace TinyTrails.UI
 {
-    public class HitUI : MonoBehaviour
+    public class PushLabelUI : MonoBehaviour
     {
         [SerializeField] TextMeshPro label;
 
-        public void Init(int damage, Vector2 position)
+        public void Init(string value, Vector2 position)
         {
-            label.text = damage.ToString();
+            label.text = value;
             transform.position = position;
 
-            transform.DOMove(position + Vector2.up * .5f, .3f);
+            transform.DOMove(position + Vector2.up * .7f, .3f);
             Destroy(gameObject, 1f);
         }
     }

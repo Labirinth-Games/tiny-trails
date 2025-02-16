@@ -14,6 +14,7 @@ namespace TinyTrails.Types
         OnUILog,
         OnUIFocusChange,
         OnUIHighlightRemove,
+        OnUIDefenseChange,
 
         // Action
         OnActionFinish,
@@ -33,5 +34,12 @@ namespace TinyTrails.Types
 
         // Enemy
         OnEnemyFinishAction,
+
+        // Chest
+        OnChestObtainItem,
+        OnChestObtainItemClose,
+
+        // Trap
+        OnTrapTriggerActive,
     }
 }

@@ -13,14 +13,19 @@ namespace TinyTrails.Behaviours
         public void SetTileType(TileType tileType) => Tile.SetTileType(tileType);
 
         #region Actions
-        public virtual void MoveTo(Vector2 pos) {
+        public virtual void MoveTo(Vector2 pos)
+        {
             bool canMove = GameManager.Instance.MapManager.MoveTile(transform.position, pos, Tile);
 
-            if(!canMove) return;
+            if (!canMove) return;
 
+            GetComponent<SpriteRenderer>().flipX = (pos.x - transform.position.x) < 0;
             transform.DOMove(pos, .15f);
         }
-        public virtual void Hit(int damage) {}
+        public virtual void Hit(int damage)
+        {
+            GameManager.Instance.AudioManager.ActionAudio.Hit();
+        }
         #endregion
 
         void OnDestroy()

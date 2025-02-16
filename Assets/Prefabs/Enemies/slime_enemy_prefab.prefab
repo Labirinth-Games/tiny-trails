@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 4414812789876818987}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -1}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -125,6 +125,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stats: {fileID: 11400000, guid: 57d1786aeffe68a4d80958cbfbbd9af9, type: 2}
+  moveStepAudios:
+  - {fileID: 8300000, guid: 686b091e747d37f4692780598fd7a397, type: 3}
+  - {fileID: 8300000, guid: 94c0a42dff0bde241a35945ecc6e7d0a, type: 3}
+  - {fileID: 8300000, guid: 9cc8baa59d1374e40b161858b2671ad3, type: 3}
+  attackAudios: []
 --- !u!61 &4348896701557622873
 BoxCollider2D:
   m_ObjectHideFlags: 0

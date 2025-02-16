@@ -11,7 +11,7 @@ namespace TinyTrails.UI
 
         private void SetHP(int value) => label.text = value.ToString();
 
-        void Start()
+        public void Init()
         {
             GameManager.Instance.EventManager.Subscriber<int>(EventChannelType.OnUIHPChange, SetHP);
         }

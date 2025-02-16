@@ -13,7 +13,7 @@ namespace TinyTrails.UI
             GameManager.Instance.TurnManager.EndTurn();
         }
 
-        private void Start()
+        public void Init()
         {
             GameManager.Instance.EventManager.Subscriber(Types.EventChannelType.OnTurnPlayerStart, () => _canFinishTurn = true);
             GameManager.Instance.EventManager.Subscriber(Types.EventChannelType.OnTurnWorldStart, () => _canFinishTurn = false);

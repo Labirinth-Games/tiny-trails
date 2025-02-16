@@ -46,6 +46,13 @@ namespace TinyTrails.SO
                 return characterClasses.focus;
             }
         }
+        public int Defense
+        {
+            get
+            {
+                return characterClasses.defense;
+            }
+        }
 
         public int Damage
         {

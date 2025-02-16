@@ -11,7 +11,7 @@ namespace TinyTrails.UI
 
         private void SetFocus(int value) => label.text = value.ToString();
 
-        void Start()
+        public void Init()
         {
             GameManager.Instance.EventManager.Subscriber<int>(EventChannelType.OnUIFocusChange, SetFocus);
         }
