@@ -26,8 +26,6 @@ public class MapGenerator : MonoBehaviour
         // connect all subzones and apply inside zone;
         ConnectSubZones(_zoneConfig);
 
-        // DrawWall();
-
         Debug.Log($"Sub Zones generated: {string.Join(" | ", subZones.Select(f => f.RoomType).ToArray())}");
 
         return new Zone(mapZoneGrid, subZones, _zoneConfig);
@@ -40,13 +38,23 @@ public class MapGenerator : MonoBehaviour
         var settings = GameManager.Instance.Settings;
         int amountMonsters = settings.AmountEnemiesByDifficulty.Find(f => f.difficulty == settings.difficulty).amountEnemies;
 
-        foreach (SubZone _subZone in subZones.FindAll(f => f.RoomType == RoomType.Enemy))
+        foreach (SubZone subZone in subZones.FindAll(f => f.RoomType == RoomType.Enemy))
         {
             for (int _i = 0; _i < amountMonsters; _i++)
             {
-                Vector2Int _position = _subZone.GetRandomPosition(1);
+                Vector2Int position = subZone.GetRandomPosition(1);
 
-                _subZone.AddTileLayer(_position, TileType.Enemy);
+                subZone.AddTileLayer(position, TileType.Enemy);
+            }
+
+            // change to show chest in enemy zone
+            bool chanceSpawnChest = Random.value > GameManager.Instance.Settings.chanceSpawnChestInEnemyZone;
+
+            if (chanceSpawnChest)
+            {
+                Vector2Int positionChest = subZone.GetRandomPosition(1);
+
+                subZone.AddTileLayer(positionChest, TileType.Chest);
             }
         }
     }
@@ -63,39 +71,13 @@ public class MapGenerator : MonoBehaviour
 
     void TreasureSpawnPoints(ZoneConfigSO _zoneConfig)
     {
-        foreach (SubZone _subZone in subZones.FindAll(f => f.RoomType == RoomType.Treasure))
+        foreach (SubZone _subZone in subZones.FindAll(f => f.RoomType == RoomType.Treasure || f.RoomType == RoomType.Trap))
         {
             Vector2Int _position = _subZone.GetRandomPosition(1);
 
             _subZone.AddTileLayer(_position, TileType.Chest);
         }
     }
-
-    // void DoorSpawnPoints(ZoneConfigSO _zoneConfig)
-    // {
-    //     int _attemps = 0;
-    //     int _attempsLimit = 20;
-    //     int _amountDoorsInMap = 0;
-
-    //     if (_zoneConfig.amountDoorsBySubZone == 0) return;
-
-    //     while (_amountDoorsInMap < _zoneConfig.amountDoors)
-    //     {
-    //         if (_attemps > _attempsLimit) break;
-
-    //         SubZone _subZone = subZones[Random.Range(0, subZones.Count)];
-
-    //         if (_subZone.AmountDoors > _zoneConfig.amountDoorsBySubZone) continue;
-
-    //         (Vector2Int position, DirectionType direction) tileLayerPosition = _subZone.GetRandomPositionEmptyInBorder();
-
-    //         _subZone.AmountDoors += 1;
-    //         _subZone.AddTileLayerDoor(tileLayerPosition.position, tileLayerPosition.direction);
-
-    //         _amountDoorsInMap++;
-    //         _attemps++;
-    //     }
-    // }
 
     void PlayerSpawnPoint(ZoneConfigSO _zoneConfig)
     {

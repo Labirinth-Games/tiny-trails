@@ -23,7 +23,7 @@ namespace TinyTrails.SO
         [Space()]
         [Header("Enemies")]
         public float enemyWaitSecondsToNextAction;
-
+        public float chanceSpawnChestInEnemyZone = .25f;
 
         [Space()]
         [Header("Chest")]

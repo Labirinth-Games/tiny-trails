@@ -22,7 +22,7 @@ namespace TinyTrails.UI
         {
             display.SetActive(true);
             
-            string text = contextGameType == ContextGameType.Battle ? "Start Game" : "End Game";
+            string text = contextGameType == ContextGameType.Battle ? "Start Battle" : "End Battle";
             label.text = text;
 
             yield return new WaitForSeconds(5f);

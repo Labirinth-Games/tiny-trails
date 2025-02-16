@@ -50,6 +50,9 @@ namespace TinyTrails.World
             GameManager.Instance.MapManager.Zone.SetCurrentSubZone(tileLayer.DoorNextSubZone);
             GameManager.Instance.MapManager.MapRender();
 
+            if (tileLayer.DoorNextSubZone.RoomType == RoomType.Enemy)
+                GameManager.Instance.EventManager.Publisher<ContextGameType>(EventChannelType.OnContextGameChangeStatus, ContextGameType.Battle);
+
             GameManager.Instance.AudioManager.Play(openDoorAudio);
 
             Destroy(gameObject);
