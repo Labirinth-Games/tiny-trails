@@ -12,7 +12,7 @@ namespace TinyTrails.Generators
         public SubZone DoorNextSubZone { get; set; }
         public List<TileLayer> WaysBetweenSubZone { get; set; }
 
-        public DirectionType WallDirection { get; private set; }
+        public DirectionType WallDirection { get; set; }
 
         // posição dentro da sub zona
         Vector2Int relativePosition;

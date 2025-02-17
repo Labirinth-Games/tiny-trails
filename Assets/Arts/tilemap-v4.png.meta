@@ -530,7 +530,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -552,7 +552,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -561,6 +561,50 @@ TextureImporter:
       bones: []
       spriteID: c4f27ece40a5212428c3df120a3cc9ef
       internalID: 1447740050
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: v4-wall-bottom-left-down
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 32
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 046be073954030c468d571210a305f72
+      internalID: -18941369
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: v4-wall-bottom-right-down
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 32
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4e3d2a9a7eca2e9439de5d8476b6ef2a
+      internalID: -1052162669
       vertices: []
       indices: 
       edges: []
@@ -593,7 +637,9 @@ TextureImporter:
       v4-floor-broken: -734290857
       v4-wall-bottom: -935217074
       v4-wall-bottom-left: 153330019
+      v4-wall-bottom-left-down: -18941369
       v4-wall-bottom-right: -1350090545
+      v4-wall-bottom-right-down: -1052162669
       v4-wall-left: -863313466
       v4-wall-right: -1766406829
       v4-wall-top: 556449188

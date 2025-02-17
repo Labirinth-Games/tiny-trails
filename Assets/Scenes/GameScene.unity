@@ -7765,6 +7765,10 @@ MonoBehaviour:
     sprite: {fileID: -1350090545, guid: c846ccf6fa0de37478d9d942c96c48b5, type: 3}
   - direction: 0
     sprite: {fileID: -3646767807709541671, guid: c846ccf6fa0de37478d9d942c96c48b5, type: 3}
+  - direction: 9
+    sprite: {fileID: -1052162669, guid: c846ccf6fa0de37478d9d942c96c48b5, type: 3}
+  - direction: 10
+    sprite: {fileID: -18941369, guid: c846ccf6fa0de37478d9d942c96c48b5, type: 3}
 --- !u!4 &1916031385
 Transform:
   m_ObjectHideFlags: 0

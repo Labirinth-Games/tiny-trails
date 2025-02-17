@@ -10,7 +10,6 @@ namespace TinyTrails.Generators
         public int Height { get; set; }
         public Vector2Int CenterPointAbsolute { get; set; }
         public RoomType RoomType { get; set; }
-        public int AmountDoors { get; set; }
         public bool HasPlayer { get; set; }
 
         public TileLayer[,] TileLayersGrid { get; set; }

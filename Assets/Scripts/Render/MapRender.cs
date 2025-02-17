@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using TinyTrails.Behaviours;
 using TinyTrails.DTO;
 using TinyTrails.Enemies;
@@ -19,32 +20,54 @@ namespace TinyTrails.Render
         [SerializeField] private List<SpriteDirection> borderSprites;
 
         private GameObject _container;
-        List<GameObject> mapZoneinstances = new();
+        List<GameObject> _mapZoneinstances = new();
 
         public void Render(Zone zone)
         {
             _container = new GameObject();
             _container.name = "World::Container Map";
 
-            mapZoneinstances.Add(FloowSpawn(zone.FloorsPositions, _container.transform));
-            mapZoneinstances.Add(FloowSpawn(zone.WayPositions, _container.transform));
+            _mapZoneinstances.Add(FloowSpawn(zone.FloorsPositions, _container.transform));
+            _mapZoneinstances.Add(FloowSpawn(zone.WayPositions, _container.transform));
 
-            WallSpawn(zone.Walls, _container.transform, wallSprites);
+            _mapZoneinstances.AddRange(WallSpawn(zone, _container.transform));
 
-            mapZoneinstances.AddRange(DoorSpawnRender(zone, _container.transform));
-            mapZoneinstances.AddRange(EnemySpawnRender(zone, _container.transform));
-            mapZoneinstances.AddRange(TreasureSpawnRender(zone, _container.transform));
-            mapZoneinstances.AddRange(TrapSpawnRender(zone, _container.transform));
-            mapZoneinstances.Add(BossSpawnRender(zone, _container.transform));
+            _mapZoneinstances.AddRange(DoorSpawnRender(zone, _container.transform));
+            _mapZoneinstances.AddRange(EnemySpawnRender(zone, _container.transform));
+            _mapZoneinstances.AddRange(TreasureSpawnRender(zone, _container.transform));
+            _mapZoneinstances.AddRange(TrapSpawnRender(zone, _container.transform));
+            _mapZoneinstances.Add(BossSpawnRender(zone, _container.transform));
         }
 
-        GameObject WallSpawn(List<TileLayer> tileLayers, Transform _mapZoneContainer, List<SpriteDirection> sprites)
+        List<GameObject> WallSpawn(Zone zone, Transform _mapZoneContainer)
         {
+            List<GameObject> instances = new();
             GameObject _container = new GameObject($"Wall Container");
             _container.transform.SetParent(_mapZoneContainer);
 
-            foreach (TileLayer tileLayer in tileLayers)
+            List<SpriteDirection> sprites = new();
+            sprites.AddRange(wallSprites);
+            sprites.AddRange(borderSprites);
+
+            // clear isntances duplicatas positions
+
+            // TODO - possivel gap de memoria aqui, abordagem usada 
+            // para remover tiles que são sobresposto por outros 
+            // quando uma subzona nova é aberta
+            _mapZoneinstances.ForEach(instance =>
             {
+                if (instance == null) return;
+
+                if (zone.WallPositions.Exists(wall => (Vector2)instance.transform.position == (Vector2)wall.GetAbsolutePosition()))
+                {
+                    Destroy(instance);
+                }
+            });
+
+
+            foreach (TileLayer tileLayer in zone.WallPositions)
+            {
+
                 GameObject instance = new GameObject("Wall", typeof(SpriteRenderer), typeof(BoxCollider2D), typeof(TileInfoDebug), typeof(TileBehaviour));
 
                 if (sprites.Count > 0)
@@ -52,7 +75,6 @@ namespace TinyTrails.Render
                     SpriteRenderer spriteRenderer = instance.GetComponent<SpriteRenderer>();
                     spriteRenderer.sprite = sprites.Find(f => f.direction == tileLayer.WallDirection)?.sprite;
                     spriteRenderer.sortingLayerName = "Floor";
-                    spriteRenderer.sortingOrder = (int)tileLayer.GetAbsolutePosition().y * -1;
                 }
 
                 BoxCollider2D boxCollider2D = instance.GetComponent<BoxCollider2D>();
@@ -67,9 +89,11 @@ namespace TinyTrails.Render
                 tileBehaviour.Tile.gameObject = tileBehaviour;
 
                 GameManager.Instance.MapManager.Register(instance.transform.position, instance.GetComponent<TileBehaviour>().Tile);
+
+                instances.Add(instance);
             }
 
-            return _container;
+            return instances;
         }
 
 
@@ -87,7 +111,6 @@ namespace TinyTrails.Render
                     SpriteRenderer spriteRenderer = instance.GetComponent<SpriteRenderer>();
                     spriteRenderer.sprite = floorSprite;
                     spriteRenderer.sortingLayerName = "Floor";
-                    // spriteRenderer.sortingOrder = (int)tileLayer.GetAbsolutePosition().y * -1;
                 }
 
                 BoxCollider2D boxCollider2D = instance.GetComponent<BoxCollider2D>();
@@ -132,7 +155,7 @@ namespace TinyTrails.Render
 
         GameObject BossSpawnRender(Zone zone, Transform container)
         {
-            if(zone.BossPosition == null) return null;
+            if (zone.BossPosition == null) return null;
 
             List<GameObject> bosses = GameManager.Instance.WorldManager.GetBosses();
 

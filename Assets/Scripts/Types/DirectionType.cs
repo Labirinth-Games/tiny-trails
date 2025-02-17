@@ -9,5 +9,7 @@ namespace TinyTrails.Types {
         Top_Right,
         Bottom_Left,
         Bottom_Right,
+        Top_Down_Right,
+        Top_Down_Left
     }
 }

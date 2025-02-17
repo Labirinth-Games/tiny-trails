@@ -278,11 +278,6 @@ public class MapGenerator : MonoBehaviour
                 tileLayer.RemoveTile(TileType.Wall);
                 DirectionType doorDirection = DirectionType.None;
 
-                Debug.Log($"Right {string.Join(", ", mapZoneGrid[step.x + 1, step.y].GetTiles().Select(s => s.TileType).ToArray())}");
-                Debug.Log($"Left {string.Join(", ", mapZoneGrid[step.x - 1, step.y].GetTiles().Select(s => s.TileType).ToArray())}");
-                Debug.Log($"Bottom {string.Join(", ", mapZoneGrid[step.x, step.y - 1].GetTiles().Select(s => s.TileType).ToArray())}");
-                Debug.Log($"Top {string.Join(", ", mapZoneGrid[step.x, step.y + 1].GetTiles().Select(s => s.TileType).ToArray())}");
-
                 // direction door
                 if (mapZoneGrid[step.x + 1, step.y].IsEmpty()) // when vertical - right
                     doorDirection = DirectionType.Right;
@@ -304,8 +299,43 @@ public class MapGenerator : MonoBehaviour
             {
                 tileLayer.AddTile(TileType.Way);
                 tileLayer.SetAbsolutePosition(step);
-
                 ways.Add(tileLayer);
+
+                // adicionando paredes quando p caminho é criado na horizontal
+                if (directionPath.x != 0)
+                {
+                    // add wall top way
+                    TileLayer wallTopTileLayer = mapZoneGrid[step.x, step.y + 1];
+                    wallTopTileLayer.AddTileWall(DirectionType.Top);
+                    wallTopTileLayer.SetAbsolutePosition(new Vector2Int(step.x, step.y + 1));
+
+                    ways.Add(wallTopTileLayer);
+
+                    // add wall bottom way
+                    TileLayer wallBottomTileLayer = mapZoneGrid[step.x, step.y - 1];
+                    wallBottomTileLayer.AddTileWall(DirectionType.Top);
+                    wallBottomTileLayer.SetAbsolutePosition(new Vector2Int(step.x, step.y - 1));
+
+                    ways.Add(wallBottomTileLayer);
+                }
+
+                // adicionando paredes quando p caminho é criado na vertical
+                if (directionPath.y != 0)
+                {
+                    // add wall right way
+                    TileLayer wallRightTileLayer = mapZoneGrid[step.x + 1, step.y];
+                    wallRightTileLayer.AddTileWall(DirectionType.Right);
+                    wallRightTileLayer.SetAbsolutePosition(new Vector2Int(step.x + 1, step.y));
+
+                    ways.Add(wallRightTileLayer);
+
+                    // add wall left way
+                    TileLayer wallLeftTileLayer = mapZoneGrid[step.x - 1, step.y];
+                    wallLeftTileLayer.AddTileWall(DirectionType.Left);
+                    wallLeftTileLayer.SetAbsolutePosition(new Vector2Int(step.x - 1, step.y));
+
+                    ways.Add(wallLeftTileLayer);
+                }
             }
 
             attemps++;
@@ -408,18 +438,20 @@ public class MapGenerator : MonoBehaviour
         {
             for (int y = 0; y < height; y++)
             {
-                if (y == 0 || y == height - 1) // adicionando parede top/down
-                {
-                    TileLayer tileLayer = new TileLayer(new Vector2Int(x, y), TileType.Wall);
-                    tileLayer.SetWallDirection(DirectionType.Top);
-                    tileLayerGrid[x, y] = tileLayer;
-                }
-                else if (x == 0 || x == width - 1) // adicionando parede left/right
-                {
-                    // var isCorner = x == 0 && y == 0 || x == width - 1 && y == 0; TODO fazer a analise para colocar as quinas
+                DirectionType directionType = DirectionType.None;
 
+                if (x == 0 && y == 0) directionType = DirectionType.Bottom_Left;
+                else if (x == width - 1 && y == 0) directionType = DirectionType.Bottom_Right;
+                else if (x == width - 1 && y == height - 1) directionType = DirectionType.Top_Right;
+                else if (x == 0 && y == height - 1) directionType = DirectionType.Top_Left;
+                else if (x == 0) directionType = DirectionType.Left;
+                else if (x == width - 1) directionType = DirectionType.Right;
+                else if (y == 0 || y == height - 1) directionType = DirectionType.Top;
+
+                if (y == 0 || y == height - 1 || x == 0 || x == width - 1) // adicionar paredes apenas nas boradas da subzone
+                {
                     TileLayer tileLayer = new TileLayer(new Vector2Int(x, y), TileType.Wall);
-                    tileLayer.SetWallDirection(x == 0 ? DirectionType.Left : DirectionType.Right);
+                    tileLayer.SetWallDirection(directionType);
                     tileLayerGrid[x, y] = tileLayer;
                 }
                 else
