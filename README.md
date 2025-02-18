@@ -1,93 +1,90 @@
-Esse jogo é simples e rápido de um toque estratégico onde o jogador entra sempre em dungeons, o motivo ele que irá decidir baseado nos seus arquétipos.
+Esse é um jogo simples que tenta manter a temática e jogabilidade de um dungeon crawler.
 
-## Arquetipos
+[Backlog](https://www.notion.so/Backlog-1981d3dd7838807a984eefec58613f83?pvs=21)
 
-- **Colecionador:** Além de tesouros, o aventureiro pode coletar criaturas mágicas, plantas raras ou artefatos históricos.
-- **Cientista:** Um aventureiro com inclinações científicas pode estudar as criaturas e os ambientes das masmorras para expandir o conhecimento humano.
-- **Artista:** Um artista pode encontrar inspiração nas paisagens e criaturas das masmorras, criando obras de arte únicas.
-- **Religioso:** Um aventureiro religioso pode acreditar que suas aventuras têm um propósito divino, como purificar o mundo ou salvar almas perdidas.
-- **Místico:** Um aventureiro com habilidades místicas pode buscar aumentar seu poder ou encontrar um mentor espiritual nas profundezas das masmorras.
+[Referências de designer ](https://www.notion.so/Refer-ncias-de-designer-19a1d3dd783880329bd4d6f90ce3846c?pvs=21)
 
-    ![image.png](./images/image.png)
+![alt text](images/image.png)
 
-Regras baseadas/copiadas do https://www.youtube.com/watch?v=LSBtuZCSgkI&t=503s 
+# Historia
 
-# **Baseado nas regras descritas, vamos simular uma partida simples de Foreign Dungeon:**
+Você é um aventureiro que tá em busca de matar o boss da dungeon e com isso ganhar fama e mostrar.
 
-**1. Setup Inicial:**
+# Tipo de jogo
 
-- **Monte o tabuleiro:** Posicione as diferentes áreas do labirinto e os marcadores de itens e monstros.
-- **Posicione o herói:** Coloque a miniatura do herói em uma das entradas do labirinto.
-- **Prepare os dados:** Tenha os dados de quatro faces à mão.
+Dungeon crawler em turnos, para 1 jogador. que irá rodar no navegador.
 
-**2. Turno do Herói:**
+# Mapa
 
-- **Movimento:** Role o dado de velocidade do herói. Mova o herói o número de casas indicado.
-- **Ação 1:** Escolha uma ação:
-    - **Explorar:** Role três dados para determinar o que encontra na área.
-    - **Atacar:** Se houver um monstro adjacente, role um dado para determinar o dano causado.
-    - **Usar item:** Se tiver algum item, utilize-o de acordo com suas regras.
-- **Ação 2:** Repita uma das ações acima, ou termine o turno.
+O mapa é procedural, onde ele pode variar de tamanho e quantidades de salas, mas sempre na sala  mais distante onde o player nasceu será a sala do Boss.
 
-**Exemplo de um turno do herói:**
+O player só consegue ver a sala que ele está atualmente ou a que ele já passou, as demais salas ficam escondidas, só serão apresentadas ao jogador quando ele entrar pela porta.
 
-- O herói rola o dado de velocidade e move-se duas casas.
-- Escolhe explorar a área. Roda os três dados e encontra um mapa rasgado.
-- Como segunda ação, decide atacar um monstro adjacente. Roda o dado e causa 1 ponto de dano ao monstro.
+## Tipos de Salas
 
-**3. Turno dos Monstros:**
+Quando o mapa é gerado cada sala exceto a que o jogador nasceu tem um tipo, cada tipo implica o que irá aparecer para o jogador durante a gameplay. Todos os tipos são gerados proceduralmente no momento que o mapa é gerado
 
-- **Ativação de Monstros:** Verifique se algum monstro está adjacente ao herói. Se sim, os monstros atacam.
-    - **Ataque dos Monstros:** Role um dado para cada monstro que ataca. O resultado determina se o herói sofre dano e quanto.
-- **Movimento dos Monstros:** Role dois dados para cada monstro.
-    - O primeiro dado determina a direção do movimento.
-    - O segundo dado determina a distância.
-- **Verifique condições especiais:** Após o movimento dos monstros, verifique se alguma condição especial foi ativada (por exemplo, invocação do monstro chefe).
+| Tipo | Descrição |
+| --- | --- |
+| Inimigo | Sala onde terá spawn de inimigos, ou seja, quando o jogador entrar ele se deparará com inimigos que terá que lutar. |
+| Armadilha | Sala onde alguns tiles do chão pode causar dano, então é importante ter cuidado ao andar |
+| Tesouro | Sala dedicada a espolios, ou seja, caso o jogador encontre uma sala dessa terá um bau onde pode encontrar diversos itens ou habilidades. |
 
-**Exemplo de um turno dos monstros:**
+## Sala Armadilha
 
-- Dois monstros estão adjacentes ao herói.
-- O primeiro monstro ataca e causa 2 pontos de dano ao herói.
-- O segundo monstro ataca e o herói consegue esquivar.
-- Os monstros se movem em direção ao herói.
+A sala de armadilha eh basicamente alguns tiles do mapa causam dano quanso o jogador passa por cima.
 
-**4. Condições de Vitória e Derrota:**
+O dano que armadilha causa vai danificando a defesa do jogador até que ele saia da sala, caso a defesa seja quebrada o jogador começa a tomar dano. 
 
-- **Vitória:** O jogador vence ao encontrar a saída ou derrotar todos os monstros.
-- **Derrota:** O jogador perde se seus pontos de vida chegarem a zero.
+# Jogador
 
-**5. Repetir os turnos:**
+Estatísticas que o jogador pode ter durante a gameplay.
 
-- Continue alternando entre os turnos do herói e dos monstros até que uma das condições de vitória ou derrota seja atingida.
+| Stats | Descrição | Valor Base |
+| --- | --- | --- |
+| HP | Vida máxima do jogador. | 20 |
+| Força | Quanto de dano ele aflige ao inimigo. | 5 |
+| Defesa | Quantidade de dano que suporta | 3 |
+| Movimento | Distancia que o jogador pode se mover, 1 significa 1 espaço no mapa (quadradinho) | 2 |
+| Foco | Energia máxima que o jogador pode acumular durante sua jornada. representada por raios ⚡ | 3 |
+| Distancia de ataque  | Distância que o jogador pode atacar  | Melee - 1
+Range - 3 |
 
-**Dicas:**
+# Inimigo
 
-- **Planejamento:** Antes de cada turno, planeje seus movimentos e ações com base na posição dos monstros e itens.
-- **Gerenciamento de recursos:** Utilize seus itens de forma estratégica para aumentar suas chances de sucesso.
-- **Adaptação:** Esteja preparado para adaptar sua estratégia de acordo com os eventos aleatórios do jogo.
+Estatísticas que um inimigo pode ter durante a gameplay.
 
-**Elementos Aleatórios:**
+| Stats | Descrição |
+| --- | --- |
+| HP | Vida máxima do jogador. |
+| Força | Quanto de dano ele aflige ao inimigo. |
+| Defesa | Quantidade de dano que suporta |
+| Movimento | Distancia que o jogador pode se mover, 1 significa 1 espaço no mapa (quadradinho) |
+| Distância de ataque  | Distância que o inimigo pode atacar  |
 
-- **Rolagem de dados:** A maior parte do jogo é baseada em rolagem de dados, o que adiciona um elemento de aleatoriedade e imprevisibilidade.
-- **Eventos especiais:** Eventos aleatórios, como a invocação do monstro chefe, podem mudar completamente o rumo da partida.
+# Combate
 
-**Observações:**
+Durante a exploração o jogador pode combater com diversas ameaças ate encontrar o boss, o combate é por turno, ou seja, o jogador tem seu tempo de ataque e assim que finalizar o inimigo terá seu turno de ações.
 
-- **Regras Completas:** Para uma experiência completa, consulte o manual do jogo para detalhes sobre todas as regras e componentes.
-- **Variações:** Existem diversas variantes e expansões para Foreign Dungeon que podem adicionar novas mecânicas e desafios ao jogo.
+## Foco
 
-**Gostaria de simular outra partida com diferentes cenários ou explorar alguma regra específica?**
+Para que a gameplay tenha um certo nível de gerenciamento, temos o foco representado por um ⚡, que é basicamente a energia usada para determinadas ações, ou seja, para que uma ação seja executada o jogador precisa ter a quantidade de foco(⚡) requerido para a ação. Ex: o jogador irá atacar, ele tem ⚡⚡, atacar custa ⚡, então ele pode atacar, já para usar um ação heroica ele precisa de ⚡⚡⚡, nesse caso ele não consegue usar essa ação.
 
-**Possíveis cenários:**
+O Foco só recarrega a partir de itens, ação de concentração e no fim do turno durante a batalha, onde ele recarrega +1 ⚡. 
 
-- Encontrar a saída secreta.
-- Derrotar o monstro chefe.
-- Utilizar uma estratégia específica (por exemplo, focar em explorar ou em combate).
+Obs: se um jogador sair de uma batalha com 2 focos, e entrar em outra, o foco máximo do jogador não é recarregado, por tanto ele irá entrar numa batalha com a quantidade de foco que possui.
 
-**Possíveis perguntas:**
+## Ações
 
-- Como funciona a mecânica de invocação do monstro chefe?
-- Quais são os itens mais úteis no jogo?
-- Quais são as melhores estratégias para enfrentar diferentes tipos de monstros?
+O jogador possui 3 Pontos de ação (PA), isso quer dizer que ele só pode fazer 3 ações no seu turno. dentre as açoes temos:
 
-**Lembre-se:** A diversão está em explorar as diferentes possibilidades e criar suas próprias estratégias para vencer os desafios de Foreign Dungeon.
+| Ações | Descrição | Custo |
+| --- | --- | --- |
+| Mover | Ação usada para poder mover o jogador durante seu turno. | ⚡ |
+| Atacar | Ação usada para infligir dano ao inimigo. | ⚡ |
+| Item | Ação usada para usar um item do inventário. | ⚡ |
+| Ação heroica | Ação que possui uma força maior que o ataque comum, podendo causar efeitos. | ⚡⚡⚡ |
+| Antecipação | Antecipação é uma ação onde o jogador adiciona seleciona uma ação do inimigo e atribui uma ação dele, ou seja, um inimigo tem 2 ações, mas o jogador escolhe que na segunda ação do inimigo ele irá ter um ataque, quando o inimigo for fazer sua segunda ação ele irá executar a ação previamente atribuída, assim dando dinamismo nos ataques, recebendo bônus quando um ataque é bem sucedido. | ⚡⚡ |
+| Concentrar | Ação que só pode ser usada 1 vez por turno, que recupera +1 ⚡(foco). | 
+ |
+| Defesa | Ação que pode ser usada para aumentar a quantidade de defesa do jogador em +2 🛡 | ⚡ |
