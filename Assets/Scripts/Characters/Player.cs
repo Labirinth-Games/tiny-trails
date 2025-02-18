@@ -42,8 +42,12 @@ namespace TinyTrails.Characters
         }
 
         #region Gets/Sets
-        public void SetHP(int val) => _health += val;
-        public void SetAdditionalStrength(int val) => AdditionalStrength += val;
+        public void SetHP(int val)
+        {
+            _health += val;
+
+            GameManager.Instance.EventManager.Publisher<int>(EventChannelType.OnUIHPChange, _health);
+        }
         #endregion
 
         #region Actions
@@ -87,7 +91,7 @@ namespace TinyTrails.Characters
         public void Move(Vector2 position)
         {
             // TODO - mover usando pathfinder assim fica mais sistematico e legal sem atravesar paredes
-            List<Vector2> steps = GameManager.Instance.MapManager.Pathfinder(transform.position, position, (lileLayer) => lileLayer.CanMove());
+            List<Vector2> steps = GameManager.Instance.MapManager.Pathfinder(transform.position, position, new List<TileType>() { TileType.Floor, TileType.Way, TileType.Trap });
             StartCoroutine(MoveStep(steps));
         }
 

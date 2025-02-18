@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TinyTrails.UI;
 using UnityEngine;
 
@@ -36,6 +37,28 @@ namespace TinyTrails.Render
             highLightUI.Init(pos, OnSelect);
 
             return instance;
+        }
+
+        public static List<GameObject> HighLightAttackEnemyRender(List<Vector2> positions, Vector2 targetPosition)
+        {
+            var prefab = Resources.Load<GameObject>("UI/highlight_attack_enemy_prefab");
+            List<GameObject> instances = new();
+
+            foreach (var position in positions)
+            {
+                if (prefab == null) return null;
+
+                var instance = Instantiate(prefab);
+
+                HighLightUI highLightUI = instance.GetComponent<HighLightUI>();
+                highLightUI.Init(position, null);
+
+                if (position == targetPosition) highLightUI.GetOverlay().SetActive(true);
+
+                instances.Add(instance);
+            }
+
+            return instances;
         }
 
         public static GameObject HitPushLabelUIRender(int damage, Vector2 position)

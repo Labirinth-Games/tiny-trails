@@ -217,7 +217,7 @@ public class MapGenerator : MonoBehaviour
         {
             for (int y = initalPointY; y <= endPointY; y++)
             {
-                if (!IsInsideGrid(x, y, mapZoneGrid)) continue;
+                if (!IsInsideGrid(x, y, mapZoneGrid) || !IsInsideGrid(relativePosition.x, relativePosition.y, subZone.TileLayersGrid)) continue;
 
                 subZone.SetTileAbsolutePosition(relativePosition, new Vector2Int(x, y));
                 mapZoneGrid[x, y] = subZone.GetTileLayerByRelativePosition(relativePosition);
@@ -440,6 +440,7 @@ public class MapGenerator : MonoBehaviour
             {
                 DirectionType directionType = DirectionType.None;
 
+                // dependendo da posição validando qual a melhor direção para a parede
                 if (x == 0 && y == 0) directionType = DirectionType.Bottom_Left;
                 else if (x == width - 1 && y == 0) directionType = DirectionType.Bottom_Right;
                 else if (x == width - 1 && y == height - 1) directionType = DirectionType.Top_Right;

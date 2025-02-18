@@ -135,6 +135,7 @@ namespace TinyTrails.Render
         {
             List<GameObject> instances = new();
             List<TileLayer> tileLayers = zone.EnemyPositions;
+            int i = 1;
 
             foreach (var tileLayer in tileLayers)
             {
@@ -147,7 +148,10 @@ namespace TinyTrails.Render
 
                 GameManager.Instance.WorldManager.SetEnemyIA(enemy.Tile);
 
+                instance.name = $"{enemy.Stats.displayName} {i}";
                 instances.Add(instance);
+
+                i++;
             }
 
             return instances;

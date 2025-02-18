@@ -15,4 +15,17 @@ namespace TinyTrails.SO
         public int defense;
         public int movement;
     }
+    
+    [System.Serializable]
+    public class AddittionalCharacterClassesSO
+    {
+        public ClassesType classesType;
+        public int distanceAttack;
+        public int hp;
+        public int strength;
+        public int luck;
+        public int focus;
+        public int defense;
+        public int movement;
+    }
 }

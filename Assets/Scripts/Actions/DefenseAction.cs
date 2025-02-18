@@ -30,6 +30,8 @@ namespace TinyTrails.Actions
             UIRender.DefensePushLabelUIRender(GameManager.Instance.Player.transform.position);
 
             GameManager.Instance.EventManager.Publisher(EventChannelType.OnUIDefenseChange, _defense);
+
+            GameManager.Instance.EventManager.Publisher<ActionPointType>(EventChannelType.OnActionFinish, ActionPointType.Defense);
         }
 
         #region Events

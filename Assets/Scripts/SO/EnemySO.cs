@@ -16,6 +16,7 @@ namespace TinyTrails.SO
         public int movement;
         public DiceType diceDamage;
         public int actionPoints = 1;
+        public int distanceAttack = 1;
         public bool isAggre;
 
         public int Damage

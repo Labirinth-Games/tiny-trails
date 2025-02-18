@@ -68,13 +68,14 @@ namespace TinyTrails.IA
             Enemy enemy = _enemiesQueue[Random.Range(0, _enemiesQueue.Count)];
             _enemiesQueue.Remove(enemy);
 
-            StartCoroutine(WorldRunActions(enemy));
+            // StartCoroutine(WorldRunActions(enemy));
+            Debug.Log($"Enemy: {enemy.name}, irá iniciar a ação, AP {enemy.Stats.actionPoints}");
+            enemy.ExecuteActions(enemy.Stats.actionPoints);
         }
 
         IEnumerator WorldRunActions(Enemy enemy)
         {
             yield return new WaitForSeconds(Random.Range(.2f, .5f));
-            enemy.ExecuteActions(enemy.Stats.actionPoints);
         }
         #endregion
 

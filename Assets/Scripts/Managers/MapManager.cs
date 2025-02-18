@@ -58,111 +58,41 @@ namespace TinyTrails.Managers
         #endregion
 
         #region Gets/Sets
-        public List<Vector2> GetEmptyAround(Vector2 origin, int magnitude)
-        {
-            var initialPointX = origin.x - magnitude;
-            var finalPointX = origin.x + magnitude;
-            var initialPointY = origin.y - magnitude;
-            var finalPointY = origin.y + magnitude;
-
-            List<Vector2> positions = new List<Vector2>();
-
-            for (var y = initialPointY; y <= finalPointY; y++)
-            {
-                for (var x = initialPointX; x <= finalPointX; x++)
-                {
-                    if (IsInsideMap(new Vector2(x, y)))
-                    {
-                        var tile = Zone.Grid[(int)x, (int)y];
-
-                        if (tile.HasFloor()) positions.Add(new Vector2(x, y));
-                    }
-                }
-            }
-
-            positions.Remove(origin);
-
-            return positions;
-        }
-
         /// <summary>
-        /// metodo responsavel por pegar todos os tiles de um
-        /// tipo especifico a sua volta baseado na magnitude(distancia de busca)
+        /// metodo responsavel por pegar posiçoes validando pela lista de tiles types e a magnitude que é distancia
         /// </summary>
-        /// <param name="tileType"></param>
-        /// <param name="origin"></param>
-        /// <param name="magnitude"></param>
+        /// <param name="origin">posição original</param>
+        /// <param name="magnitude">distancia do movimento de ataque</param>
+        /// <param name="tileTypeValidate">tile types que sera validaddo, assim ignorando qualquer tile que n esteja na lista</param>
         /// <returns></returns>
-        public List<Tile> GetTileTypeAround(TileType tileType, Vector2 origin, int magnitude)
+        public List<Vector2> GetAround(Vector2 origin, int magnitude, List<TileType> tileTypeValidate)
         {
-            var initialPointX = origin.x - magnitude;
-            var finalPointX = origin.x + magnitude;
-            var initialPointY = origin.y - magnitude;
-            var finalPointY = origin.y + magnitude;
-
-            List<Tile> positions = new List<Tile>();
-
-            for (var y = initialPointY; y <= finalPointY; y++)
-            {
-                for (var x = initialPointX; x <= finalPointX; x++)
-                {
-                    if (IsInsideMap(new Vector2(x, y)))
-                    {
-                        TileLayer tileLayer = Zone.Grid[(int)x, (int)y];
-
-                        if (tileLayer.HasTile(tileType)) positions.Add(tileLayer.GetTile(tileType));
-                    }
-                }
-            }
-
-            return positions;
-        }
-
-        public List<Vector2> GetAttackAround(Vector2 origin, int magnitude)
-        {
-            var initialPointX = origin.x - magnitude;
-            var finalPointX = origin.x + magnitude;
-            var initialPointY = origin.y - magnitude;
-            var finalPointY = origin.y + magnitude;
-
+            List<(Vector2 direction, bool canStop)> directions = new() {
+                (Vector2.up, false),
+                (Vector2.down, false),
+                (Vector2.left, false),
+                (Vector2.right, false),
+                // diagonais
+                (Vector2.up + Vector2.left, false),
+                (Vector2.up + Vector2.right, false),
+                (Vector2.down + Vector2.left, false),
+                (Vector2.down + Vector2.right, false),
+            };
+            List<Vector2> dontCanMove = new();
             List<Vector2> positions = new List<Vector2>();
 
-            for (var y = initialPointY; y <= finalPointY; y++)
+            for (var i = 1; i <= magnitude; i++)
             {
-                for (var x = initialPointX; x <= finalPointX; x++)
+                foreach (var direction in directions)
                 {
-                    if (IsInsideMap(new Vector2(x, y)))
+                    Vector2 position = origin + direction.direction * i;
+
+                    if (!dontCanMove.Contains(direction.direction) && IsInsideMap(position))
                     {
-                        var tile = Zone.Grid[(int)x, (int)y];
+                        var tile = Zone.Grid[(int)position.x, (int)position.y];
 
-                        if (tile.CanAttack()) positions.Add(new Vector2(x, y));
-                    }
-                }
-            }
-
-            positions.Remove(origin);
-
-            return positions;
-        }
-
-        public List<Vector2> GetMoveAround(Vector2 origin, int magnitude)
-        {
-            var initialPointX = origin.x - magnitude;
-            var finalPointX = origin.x + magnitude;
-            var initialPointY = origin.y - magnitude;
-            var finalPointY = origin.y + magnitude;
-
-            List<Vector2> positions = new List<Vector2>();
-
-            for (var y = initialPointY; y <= finalPointY; y++)
-            {
-                for (var x = initialPointX; x <= finalPointX; x++)
-                {
-                    if (IsInsideMap(new Vector2(x, y)))
-                    {
-                        var tile = Zone.Grid[(int)x, (int)y];
-
-                        if (tile.CanMove()) positions.Add(new Vector2(x, y));
+                        if (tile.HasTile(tileTypeValidate)) positions.Add(position);
+                        else dontCanMove.Add(direction.direction);
                     }
                 }
             }
@@ -193,71 +123,14 @@ namespace TinyTrails.Managers
             return false;
         }
 
-        public List<Vector2> Pathfinder(Vector2 originPosition, Vector2 destinyPosition)
-        {
-            Vector2 step = originPosition;
-            Vector2 lastStep = originPosition;
-
-            int attemps = 0;
-            int attempsLimit = 300;
-
-            List<Vector2> steps = new();
-
-            while (true)
-            {
-                if (attemps > attempsLimit) break;
-
-                // direction to move step
-                List<(Vector2 direction, float distance)> directions = new List<(Vector2 direction, float distance)>() {
-                    (step + Vector2.up, Vector2.Distance(destinyPosition, step + Vector2.up)),
-                    (step + Vector2.down, Vector2.Distance(destinyPosition, step + Vector2.down)),
-                    (step + Vector2.left, Vector2.Distance(destinyPosition, step + Vector2.left)),
-                    (step + Vector2.right, Vector2.Distance(destinyPosition, step + Vector2.right)),
-                };
-
-                // filtrando das direcoes possiveis quais que podem ser usadas
-                List<(Vector2 direction, float distance)> directionsWithoutObstacules = new();
-
-                foreach (var direction in directions)
-                {
-                    if (!IsInsideMap(direction.direction)) continue;
-
-                    TileLayer tileLayerDir = Zone.Grid[(int)direction.direction.x, (int)direction.direction.y];
-
-                    if (tileLayerDir.HasFloor()) directionsWithoutObstacules.Add(direction);
-                }
-
-                // buscando o menor caminho entre as conhecidas sem obstaculos
-                lastStep = step;
-                step = directionsWithoutObstacules.Find(_direction => _direction.distance == directions.Min(_directionMin => _directionMin.distance)).direction;
-
-                TileLayer tileLayer = Zone.Grid[(int)step.x, (int)step.y];
-
-                // quando chega no destino ele para de fazer o pathfinder
-                if (step == destinyPosition)
-                {
-                    steps.Add(tileLayer.GetAbsolutePosition());
-                    break;
-                }
-
-                // adicionando os caminhos
-                if (tileLayer.HasFloor())
-                    steps.Add(tileLayer.GetAbsolutePosition());
-
-                attemps++;
-            }
-
-            return steps;
-        }
-
         /// <summary>
-        /// Metodo de pathfinder com callback de validação customizada
+        /// Metodo de pathfinder com lista de tiles type para ser usada na validação
         /// </summary>
         /// <param name="originPosition"></param>
         /// <param name="destinyPosition"></param>
-        /// <param name="CallbackValidation"></param>
+        /// <param name="tileTypeValidate"></param>
         /// <returns></returns>
-        public List<Vector2> Pathfinder(Vector2 originPosition, Vector2 destinyPosition, System.Func<TileLayer, bool> CallbackValidation)
+        public List<Vector2> Pathfinder(Vector2 originPosition, Vector2 destinyPosition, List<TileType> tileTypeValidate, int limitMovement = -1)
         {
             Vector2 step = originPosition;
             Vector2 lastStep = originPosition;
@@ -277,36 +150,48 @@ namespace TinyTrails.Managers
                     (step + Vector2.down, Vector2.Distance(destinyPosition, step + Vector2.down)),
                     (step + Vector2.left, Vector2.Distance(destinyPosition, step + Vector2.left)),
                     (step + Vector2.right, Vector2.Distance(destinyPosition, step + Vector2.right)),
+                    // diagonal
+                    (step + Vector2.up + Vector2.right, Vector2.Distance(destinyPosition, step + Vector2.up + Vector2.right)),
+                    (step + Vector2.up + Vector2.left, Vector2.Distance(destinyPosition, step + Vector2.up + Vector2.left)),
+                    (step + Vector2.down + Vector2.right, Vector2.Distance(destinyPosition, step + Vector2.down + Vector2.right)),
+                    (step + Vector2.down + Vector2.left, Vector2.Distance(destinyPosition, step + Vector2.down + Vector2.left)),
                 };
 
                 // filtrando das direcoes possiveis quais que podem ser usadas
-                List<(Vector2 direction, float distance)> directionsWithoutObstacules = new();
-
-                foreach (var direction in directions)
+                var directionsWithoutObstacules = directions.FindAll(tileDirection =>
                 {
-                    if (!IsInsideMap(direction.direction)) continue;
+                    if (!IsInsideMap(tileDirection.direction)) return false;
 
-                    TileLayer tileLayerDir = Zone.Grid[(int)direction.direction.x, (int)direction.direction.y];
+                    TileLayer tile = Zone.Grid[(int)tileDirection.direction.x, (int)tileDirection.direction.y];
 
-                    if (CallbackValidation(tileLayerDir)) directionsWithoutObstacules.Add(direction);
-                }
+                    // n pode passar por sima desses tiles
+                    if (tile.HasTile(new List<TileType>() { TileType.Player, TileType.Enemy, TileType.Chest })) return false;
+
+                    return tile.HasTile(tileTypeValidate);
+                });
 
                 // buscando o menor caminho entre as conhecidas sem obstaculos
                 lastStep = step;
-                step = directionsWithoutObstacules.Find(_direction => _direction.distance == directions.Min(_directionMin => _directionMin.distance)).direction;
+                step = directionsWithoutObstacules.Find(_direction => _direction.distance == directionsWithoutObstacules.Min(_directionMin => _directionMin.distance)).direction;
 
                 TileLayer tileLayer = Zone.Grid[(int)step.x, (int)step.y];
 
+                if (steps.Contains(tileLayer.GetAbsolutePosition()))
+                {
+                    lastStep = step;
+                    attemps++;
+                    continue;
+                }
+
                 // quando chega no destino ele para de fazer o pathfinder
-                if (step == destinyPosition)
+                if (step == destinyPosition || limitMovement == steps.Count)
                 {
                     steps.Add(tileLayer.GetAbsolutePosition());
                     break;
                 }
 
                 // adicionando os caminhos
-                if (CallbackValidation(tileLayer)) steps.Add(tileLayer.GetAbsolutePosition());
-
+                steps.Add(tileLayer.GetAbsolutePosition());
                 attemps++;
             }
 

@@ -20,24 +20,20 @@ namespace TinyTrails.Generators
         Vector2Int absolutePosition;
         List<Tile> tiles = new();
 
-        public TileLayer(Vector2Int _relativePosition, TileType _tileType)
+        public TileLayer(Vector2Int relativePosition, TileType tileType)
         {
-            relativePosition = _relativePosition;
+            this.relativePosition = relativePosition;
 
-            if (_tileType != TileType.None)
+            if (tileType != TileType.None)
             {
-                Tile tile = new Tile();
-                tile.SetTileType(_tileType);
-
+                Tile tile = new Tile(tileType);
                 tiles.Add(tile);
             }
         }
 
-        public void AddTile(TileType _tileType)
+        public void AddTile(TileType tileType)
         {
-            Tile tile = new Tile();
-            tile.SetTileType(_tileType);
-
+            Tile tile = new Tile(tileType);
             tiles.Add(tile);
         }
 
@@ -112,7 +108,8 @@ namespace TinyTrails.Generators
         public bool HasFloor() => tiles.Exists(f => f.TileType == TileType.Floor || f.TileType == TileType.Way) && tiles.Count == 1;
         public bool HasObstacle() => new List<TileType>() { TileType.Door, TileType.Wall }.Any(type => tiles.Exists(f => f.TileType == type));
         public bool HasDoor() => tiles.Exists(f => f.TileType == TileType.Door);
-        public bool HasTile(TileType _tileType) => tiles.Exists(f => f.TileType == _tileType);
+        public bool HasTile(TileType tileType) => tiles.Exists((System.Predicate<Tile>)(f => f.TileType == tileType));
+        public bool HasTile(List<TileType> tileTypes) => tiles.Exists(f => tileTypes.Contains(f.TileType));
         public bool CanSpawn() => !new List<TileType>() { TileType.Enemy, TileType.Door, TileType.Way, TileType.Player }.Any(type => tiles.Exists(f => f.TileType == type)) && tiles.Exists(f => f.TileType == TileType.Floor);
         public bool CanAttack() => tiles.Exists(f => f.TileType == TileType.Enemy || f.TileType == TileType.Floor || f.TileType == TileType.Way);
         public bool CanMove() => tiles.Exists(f => f.TileType == TileType.Floor || f.TileType == TileType.Trap || f.TileType == TileType.Way);

@@ -46,6 +46,7 @@ namespace TinyTrails.World
             TileLayer tileLayer = GameManager.Instance.MapManager.Zone.GetTileLayerOfCurrentSubZone(transform.position);
 
             GameManager.Instance.MapManager.Unregister(transform.position, Tile);
+            GameManager.Instance.MapManager.Register(transform.position, new Tile(TileType.Floor));
 
             GameManager.Instance.MapManager.Zone.SetCurrentSubZone(tileLayer.DoorNextSubZone);
             GameManager.Instance.MapManager.MapRender();

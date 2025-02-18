@@ -18,15 +18,16 @@ namespace TinyTrails.World
         [SerializeField] Sprite chestOpenSprite;
 
         bool isOpen;
+        ItemSO _item;
 
         public void Open()
         {
             isOpen = true;
 
             var items = GameManager.Instance.WorldManager.GetItems();
-            var itemSo = items[Random.Range(0, items.Count)];
+            _item = items[Random.Range(0, items.Count)];
 
-            GameManager.Instance.EventManager.Publisher<ItemSO>(EventChannelType.OnChestObtainItem, itemSo);
+            GameManager.Instance.EventManager.Publisher<ItemSO>(EventChannelType.OnChestObtainItem, _item);
 
             GetComponent<SpriteRenderer>().sprite = chestOpenSprite;
             chestButtonUI.SetActive(false);
@@ -56,7 +57,12 @@ namespace TinyTrails.World
         }
 
         #region Events
-        void OnObtainItemUIClose() => ChanceOfSpawnEnemies();
+        void OnObtainItemUIClose()
+        {
+            ChanceOfSpawnEnemies(); // change de aparecer monstros depois de abrir o bau
+
+            GameManager.Instance.InventaryManager.Add(_item);
+        }
         #endregion
 
         #region Collider

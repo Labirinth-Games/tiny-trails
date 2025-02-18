@@ -16,7 +16,7 @@ namespace TinyTrails.Actions
         public void Action()
         {
             _player = GameManager.Instance.Player;
-            List<Vector2> positions = GameManager.Instance.MapManager.GetAttackAround(_player.transform.position, _player.Stats.DistanceAttack);
+            List<Vector2> positions = GameManager.Instance.MapManager.GetAround(_player.transform.position, _player.Stats.DistanceAttack, new List<TileType>() { TileType.Floor, TileType.Way, TileType.Trap });
 
             foreach (var position in positions)
             {

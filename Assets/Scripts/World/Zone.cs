@@ -149,7 +149,7 @@ namespace TinyTrails.World
 
                                 }
 
-                                if (wayTileLayer.HasTile(TileType.Door) || wayTileLayer.IsEmpty())
+                                if (wayTileLayer.HasTile(TileType.Floor) || wayTileLayer.HasTile(TileType.Door) || wayTileLayer.IsEmpty())
                                 {
                                     wayTileLayer.ClearTiles();
                                     wayTileLayer.AddTile(TileType.Way);

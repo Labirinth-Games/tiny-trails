@@ -20,6 +20,8 @@ namespace TinyTrails.UI
             transform.DOScale(.3f, .3f).From();
         }
 
+        public GameObject GetOverlay() => overlayerPrefab;
+
         #region Event Mouse
         void OnMouseDown()
         {

@@ -4,5 +4,7 @@ namespace TinyTrails.Types {
         Health,
         Strength,
         Skill,
+        Defense,
+        Focus,
     }
 }

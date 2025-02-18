@@ -157,7 +157,6 @@ namespace TinyTrails.Controllers
 
         public void FocusActionButton()
         {
-
             bool canApplyAction = CanApplyAction(ActionPointType.Concentrate);
 
             if (!canApplyAction) return;
@@ -170,7 +169,20 @@ namespace TinyTrails.Controllers
 
             UIRender.FocusPushLabelUIRender(GameManager.Instance.Player.transform.position);
 
-            OnActionPointUsed(ActionPointType.Concentrate);
+            GameManager.Instance.EventManager.Publisher<ActionPointType>(EventChannelType.OnActionFinish, ActionPointType.Concentrate);
+        }
+
+        public void ItemActionButton()
+        {
+            bool canApplyAction = CanApplyAction(ActionPointType.UseItem);
+
+            if (!canApplyAction) return;
+
+            _currentAction.isFinish = false;
+            _currentAction.actionType = ActionPointType.UseItem;
+            
+            GameManager.Instance.EventManager.Publisher<int>(EventChannelType.OnFocusReduce, GameManager.Instance.Settings.costFocusToItem);
+            GameManager.Instance.EventManager.Publisher<ActionPointType>(EventChannelType.OnActionFinish, ActionPointType.UseItem);
         }
         #endregion
 

@@ -11,6 +11,12 @@ namespace TinyTrails.DTO
         public TileType TileType { get; private set; }
         public TileBehaviour gameObject;
 
+        public Tile() {}
+        public Tile(TileType tileType)
+        {
+            TileType = tileType;
+        }
+
         public void SetTileType(TileType tileType) => TileType = tileType;
 
     }

@@ -1,4 +1,5 @@
 using TinyTrails.Helpers;
+using TinyTrails.Managers;
 using TinyTrails.Types;
 using UnityEngine;
 
@@ -10,6 +11,7 @@ namespace TinyTrails.SO
         public string displayName;
         public GameObject body;
         public CharacterClassesSO characterClasses;
+        public AddittionalCharacterClassesSO additionalStats = new();
 
         [Header("Stats Base")]
         public DiceType diceDamage;
@@ -19,7 +21,7 @@ namespace TinyTrails.SO
         {
             get
             {
-                return characterClasses.hp;
+                return characterClasses.hp + additionalStats.hp;
             }
         }
 
@@ -27,7 +29,7 @@ namespace TinyTrails.SO
         {
             get
             {
-                return characterClasses.movement;
+                return characterClasses.movement + additionalStats.movement;
             }
         }
 
@@ -35,7 +37,7 @@ namespace TinyTrails.SO
         {
             get
             {
-                return characterClasses.distanceAttack;
+                return characterClasses.distanceAttack + additionalStats.distanceAttack;
             }
         }
 
@@ -43,14 +45,14 @@ namespace TinyTrails.SO
         {
             get
             {
-                return characterClasses.focus;
+                return characterClasses.focus + additionalStats.focus;
             }
         }
         public int Defense
         {
             get
             {
-                return characterClasses.defense;
+                return characterClasses.defense + additionalStats.defense;
             }
         }
 
@@ -64,8 +66,18 @@ namespace TinyTrails.SO
         #endregion
 
         #region Sets
-        public void SetHP(int hp) => characterClasses.hp += hp;
-        public void ReduceHP(int hp) => characterClasses.hp -= hp;
+        public void SetHP(int hp) => additionalStats.hp += hp;
+        public void ReduceHP(int hp) => additionalStats.hp -= hp;
+        public void SetFocus(int value)
+        {
+            additionalStats.focus += value;
+            GameManager.Instance.EventManager.Publisher<int>(EventChannelType.OnUIFocusChange, Focus);
+        }
+        public void SetDefense(int value)
+        {
+            additionalStats.defense += value;
+            GameManager.Instance.EventManager.Publisher<int>(EventChannelType.OnUIDefenseChange, Defense);
+        }
         #endregion
     }
 }

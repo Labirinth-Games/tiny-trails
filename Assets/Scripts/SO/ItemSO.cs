@@ -10,7 +10,7 @@ namespace TinyTrails.SO
         public Sprite sprite;
         [TextArea]
         public string desctiption;
-        public ItemType type;
+        public ItemType itemType;
         public int value;
 
     }

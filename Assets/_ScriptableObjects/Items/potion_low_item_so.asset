@@ -15,5 +15,5 @@ MonoBehaviour:
   displayName: Potion Low
   sprite: {fileID: 171669841808084094, guid: c0acb3a28ba37284baf3c45ae68ed71f, type: 3}
   desctiption: Upper the 3 of HP
-  type: 1
+  itemType: 1
   value: 3

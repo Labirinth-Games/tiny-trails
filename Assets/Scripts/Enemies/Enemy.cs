@@ -51,10 +51,12 @@ namespace TinyTrails.Enemies
 
             if (distance > 1) // esta a mais de um quadrado de distancia
             {
+                Debug.Log($"Enemy: {name}, remain actions {remainActionPoints}, Action Actual Move");
                 Move();
                 return;
             }
 
+            Debug.Log($"Enemy: {name}, remain actions {remainActionPoints}, Action Actual Attack");
             Attack();
         }
 
@@ -98,15 +100,20 @@ namespace TinyTrails.Enemies
 
         protected virtual void Move()
         {
-            List<Vector2> steps = GameManager.Instance.MapManager.Pathfinder(GameManager.Instance.Player.transform.position, transform.position);
+            List<Vector2> steps = GameManager.Instance.MapManager.Pathfinder(transform.position, GameManager.Instance.Player.transform.position, new List<TileType>() { TileType.Floor, TileType.Way, TileType.Trap }, Stats.movement);
 
-            if (steps.Count == 0) return;
+            if (steps.Count == 0)
+            {
+                _isFinishAction = false;
+                Debug.Log($"Enemy: {name}, terminou pq n tem steps no pathfinder");
+                GameManager.Instance.EventManager.Publisher(EventChannelType.OnEnemyFinishAction);
 
-            // steps.RemoveAt(steps.Count - 1);
-            steps.Reverse();
-            List<Vector2> movements = steps.ToArray().Take(Stats.movement).ToList();
+                return;
+            }
 
-            StartCoroutine(MoveStep(movements));
+            steps.RemoveAt(steps.Count - 1);
+
+            StartCoroutine(MoveStep(steps));
         }
 
         IEnumerator MoveStep(List<Vector2> positions)
@@ -114,7 +121,7 @@ namespace TinyTrails.Enemies
             foreach (var position in positions)
             {
                 base.MoveTo(position);
-                
+
                 GameManager.Instance.AudioManager.Play(moveStepAudios[Random.Range(0, moveStepAudios.Count)]);
 
                 yield return new WaitForSeconds(GameManager.Instance.Settings.VelocityMovementPieces);
@@ -123,6 +130,7 @@ namespace TinyTrails.Enemies
             if (_isFinishAction)
             {
                 _isFinishAction = false;
+                Debug.Log($"Enemy: {name}, terminou");
                 GameManager.Instance.EventManager.Publisher(EventChannelType.OnEnemyFinishAction);
             }
             else
@@ -134,11 +142,23 @@ namespace TinyTrails.Enemies
 
         protected virtual async Task Attack()
         {
-            GameManager.Instance.Player.gameObject.GetComponent<Player>().Hit(Stats.Damage);
+            Player player = GameManager.Instance.Player;
+            List<GameObject> instances = new();
+
+            List<Vector2> positions = GameManager.Instance.MapManager.GetAround(transform.position, Stats.distanceAttack, new List<TileType>() { TileType.Floor, TileType.Way, TileType.Trap });
+            instances = UIRender.HighLightAttackEnemyRender(positions, player.transform.position);
+
+            // aguada um tempo depois de mostrar a marcação e da dano no player
+            await Task.Delay(300);
+
+            instances.ForEach(f => Destroy(f));
+
+            player.gameObject.GetComponent<Player>().Hit(Stats.Damage);
 
             if (_isFinishAction)
             {
                 _isFinishAction = false;
+                Debug.Log($"Enemy: {name}, terminou");
                 GameManager.Instance.EventManager.Publisher(EventChannelType.OnEnemyFinishAction);
             }
             else
