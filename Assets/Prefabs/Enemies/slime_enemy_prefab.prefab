@@ -125,6 +125,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stats: {fileID: 11400000, guid: 57d1786aeffe68a4d80958cbfbbd9af9, type: 2}
+  animator: {fileID: 8105159059577216465}
   moveStepAudios:
   - {fileID: 8300000, guid: 686b091e747d37f4692780598fd7a397, type: 3}
   - {fileID: 8300000, guid: 94c0a42dff0bde241a35945ecc6e7d0a, type: 3}

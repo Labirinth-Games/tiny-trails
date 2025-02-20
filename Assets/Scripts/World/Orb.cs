@@ -64,7 +64,7 @@ namespace TinyTrails.World
         {
             StartCoroutine(HitBlinkEffect());
 
-            UIRender.HitPushLabelUIRender(damage, transform.position);
+            UIRender.HitPushLabelUIRender(damage.ToString(), transform.position);
 
             health -= damage;
 

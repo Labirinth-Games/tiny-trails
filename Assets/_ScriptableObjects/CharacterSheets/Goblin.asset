@@ -15,4 +15,11 @@ MonoBehaviour:
   displayName: Goblin
   body: {fileID: 8334355910097944149, guid: 82f31b1aba932e8418573d314aaea061, type: 3}
   characterClasses: {fileID: 11400000, guid: 918badedb686ebc428c1b7b8ac4ee903, type: 2}
-  diceDamage: 4
+  additionalStats:
+    distanceAttack: 0
+    hp: 0
+    strength: 0
+    luck: 0
+    focus: 0
+    defense: 0
+    movement: 0

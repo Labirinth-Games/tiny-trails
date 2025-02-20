@@ -61,7 +61,7 @@ namespace TinyTrails.Render
             return instances;
         }
 
-        public static GameObject HitPushLabelUIRender(int damage, Vector2 position)
+        public static GameObject HitPushLabelUIRender(string damage, Vector2 position)
         {
             var prefab = Resources.Load<GameObject>("UI/hit_push_label_ui_prefab");
 
@@ -70,7 +70,7 @@ namespace TinyTrails.Render
             var instance = Instantiate(prefab);
 
             PushLabelUI hitUI = instance.GetComponent<PushLabelUI>();
-            hitUI.Init(damage.ToString(), position);
+            hitUI.Init(damage, position);
 
             return instance;
         }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TinyTrails.Behaviours;
 using TinyTrails.DTO;
 using TinyTrails.Generators;
@@ -51,7 +52,7 @@ namespace TinyTrails.World
             GameManager.Instance.MapManager.Zone.SetCurrentSubZone(tileLayer.DoorNextSubZone);
             GameManager.Instance.MapManager.MapRender();
 
-            if (tileLayer.DoorNextSubZone.RoomType == RoomType.Enemy)
+            if (new List<RoomType>() { RoomType.Enemy, RoomType.Boss }.Contains(tileLayer.DoorNextSubZone.RoomType))
                 GameManager.Instance.EventManager.Publisher<ContextGameType>(EventChannelType.OnContextGameChangeStatus, ContextGameType.Battle);
 
             GameManager.Instance.AudioManager.Play(openDoorAudio);

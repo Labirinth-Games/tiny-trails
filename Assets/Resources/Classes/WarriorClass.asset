@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1f81273aaf6d334cbd8b1601961965a, type: 3}
+  m_Name: WarriorClass
+  m_EditorClassIdentifier: 
+  classesType: 1
+  prefab: {fileID: 6035146925802177461, guid: 970250aa2d1ad614395d7a1706419bf6, type: 3}
+  sprite: {fileID: -8906833983067770631, guid: f05a96c427d6eec44a5a1b54b0f77011, type: 3}
+  distanceAttack: 1
+  hp: 20
+  strength: 5
+  power: 4
+  luck: 1
+  focus: 5
+  defense: 3
+  movement: 2

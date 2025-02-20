@@ -1,10 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using DG.Tweening;
 using TinyTrails.Behaviours;
-using TinyTrails.Generators;
-using TinyTrails.Helpers;
-using TinyTrails.i18n;
 using TinyTrails.Managers;
 using TinyTrails.Render;
 using TinyTrails.SO;
@@ -20,6 +16,7 @@ namespace TinyTrails.Characters
         protected int AdditionalStrength = 0;
 
         int _health;
+        int xp;
 
         public void Init()
         {
@@ -48,17 +45,27 @@ namespace TinyTrails.Characters
 
             GameManager.Instance.EventManager.Publisher<int>(EventChannelType.OnUIHPChange, _health);
         }
+
+        public void SetXP(int xp) => this.xp += xp;
         #endregion
 
         #region Actions
-        public override void Hit(int damage)
+        public override void Hit(int damageReceived)
         {
+            int damage = Stats.Defense - damageReceived;
+
+            if (damage <= 0)
+            {
+                UIRender.HitPushLabelUIRender("Miss", transform.position);
+                return;
+            }
+
             _health -= Stats.Defense - damage;
 
             StartCoroutine(HitBlinkEffect());
 
             // render damage hit
-            UIRender.HitPushLabelUIRender(damage, transform.position);
+            UIRender.HitPushLabelUIRender(damage.ToString(), transform.position);
 
             GameManager.Instance.EventManager.Publisher<int>(EventChannelType.OnUIHPChange, _health);
 
@@ -73,9 +80,9 @@ namespace TinyTrails.Characters
         /// <returns></returns>
         IEnumerator HitBlinkEffect()
         {
-            GetComponent<SpriteRenderer>().material.SetFloat("_IsHit", 1f);
+            GetComponentInChildren<SpriteRenderer>().material.SetFloat("_IsHit", 1f);
             yield return new WaitForSeconds(.2f);
-            GetComponent<SpriteRenderer>().material.SetFloat("_IsHit", 0f);
+            GetComponentInChildren<SpriteRenderer>().material.SetFloat("_IsHit", 0f);
         }
 
         public void Death()

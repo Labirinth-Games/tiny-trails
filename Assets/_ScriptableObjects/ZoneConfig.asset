@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minSubZoneSize: 5
   maxSubZoneSize: 5
-  amountSubZones: 6
+  amountSubZones: 4
   minSpaceBeetweenSubZones: 1
   maxSpaceBeetweenSubZones: 1
   scaleTilePosition: 1

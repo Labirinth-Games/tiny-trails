@@ -13,6 +13,7 @@ namespace TinyTrails.SO
         public int hp;
         public int strength;
         public int Level = 1;
+        public int xp;
         public int movement;
         public DiceType diceDamage;
         public int actionPoints = 1;

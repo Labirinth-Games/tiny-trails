@@ -97,7 +97,7 @@ namespace TinyTrails.Controllers
             _currentAction.isFinish = true;
             _currentAction.actionType = ActionPointType.None;
 
-            if (GameManager.Instance.ContextGameManager.IsExplore()) return;
+            if (GameManager.Instance.ContextGameManager.IsExplore() || actionPointType == ActionPointType.None) return;
 
             _actionPoints -= 1;
 
@@ -180,7 +180,7 @@ namespace TinyTrails.Controllers
 
             _currentAction.isFinish = false;
             _currentAction.actionType = ActionPointType.UseItem;
-            
+
             GameManager.Instance.EventManager.Publisher<int>(EventChannelType.OnFocusReduce, GameManager.Instance.Settings.costFocusToItem);
             GameManager.Instance.EventManager.Publisher<ActionPointType>(EventChannelType.OnActionFinish, ActionPointType.UseItem);
         }

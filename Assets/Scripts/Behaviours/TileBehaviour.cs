@@ -19,7 +19,7 @@ namespace TinyTrails.Behaviours
 
             if (!canMove) return;
 
-            GetComponent<SpriteRenderer>().flipX = (pos.x - transform.position.x) < 0;
+            GetComponentInChildren<SpriteRenderer>().flipX = pos.x - transform.position.x < 0;
             transform.DOMove(pos, .15f);
         }
         public virtual void Hit(int damage)

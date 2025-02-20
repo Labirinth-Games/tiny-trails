@@ -10,18 +10,15 @@ namespace TinyTrails.SO
     {
         public string displayName;
         public GameObject body;
-        public CharacterClassesSO characterClasses;
-        public AddittionalCharacterClassesSO additionalStats = new();
-
-        [Header("Stats Base")]
-        public DiceType diceDamage;
+        public CharacterClassesSO characterClass;
+        public AddittionalStats additionalStats = new();
 
         #region Metodos Stats
         public int HP
         {
             get
             {
-                return characterClasses.hp + additionalStats.hp;
+                return characterClass.hp + additionalStats.hp;
             }
         }
 
@@ -29,7 +26,7 @@ namespace TinyTrails.SO
         {
             get
             {
-                return characterClasses.movement + additionalStats.movement;
+                return characterClass.movement + additionalStats.movement;
             }
         }
 
@@ -37,7 +34,7 @@ namespace TinyTrails.SO
         {
             get
             {
-                return characterClasses.distanceAttack + additionalStats.distanceAttack;
+                return characterClass.distanceAttack + additionalStats.distanceAttack;
             }
         }
 
@@ -45,14 +42,14 @@ namespace TinyTrails.SO
         {
             get
             {
-                return characterClasses.focus + additionalStats.focus;
+                return characterClass.focus + additionalStats.focus;
             }
         }
         public int Defense
         {
             get
             {
-                return characterClasses.defense + additionalStats.defense;
+                return characterClass.defense + additionalStats.defense;
             }
         }
 
@@ -60,7 +57,7 @@ namespace TinyTrails.SO
         {
             get
             {
-                return characterClasses.strength + DiceHelper.Roll(diceDamage);
+                return characterClass.strength + DiceHelper.Roll(characterClass.power);
             }
         }
         #endregion

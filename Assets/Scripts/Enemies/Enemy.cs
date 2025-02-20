@@ -16,6 +16,7 @@ namespace TinyTrails.Enemies
     public class Enemy : TileBehaviour
     {
         [SerializeField] private EnemySO stats;
+        [SerializeField] Animator animator;
 
         [Header("Audios")]
         [SerializeField] List<AudioClip> moveStepAudios;
@@ -69,7 +70,7 @@ namespace TinyTrails.Enemies
             StartCoroutine(HitBlinkEffect());
 
             // render damage hit
-            UIRender.HitPushLabelUIRender(damage, transform.position);
+            UIRender.HitPushLabelUIRender(damage.ToString(), transform.position);
 
             if (Stats.hp <= 0) Death();
 
@@ -118,6 +119,8 @@ namespace TinyTrails.Enemies
 
         IEnumerator MoveStep(List<Vector2> positions)
         {
+            animator.SetBool("Walk", true);
+
             foreach (var position in positions)
             {
                 base.MoveTo(position);
@@ -131,6 +134,7 @@ namespace TinyTrails.Enemies
             {
                 _isFinishAction = false;
                 Debug.Log($"Enemy: {name}, terminou");
+                animator.SetBool("Walk", false);
                 GameManager.Instance.EventManager.Publisher(EventChannelType.OnEnemyFinishAction);
             }
             else
@@ -153,6 +157,7 @@ namespace TinyTrails.Enemies
 
             instances.ForEach(f => Destroy(f));
 
+            animator.SetTrigger("Attack");
             player.gameObject.GetComponent<Player>().Hit(Stats.Damage);
 
             if (_isFinishAction)

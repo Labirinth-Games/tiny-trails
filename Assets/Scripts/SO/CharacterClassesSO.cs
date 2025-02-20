@@ -7,9 +7,12 @@ namespace TinyTrails.SO
     public class CharacterClassesSO : ScriptableObject
     {
         public ClassesType classesType;
+        public GameObject prefab;
+        public Sprite sprite;
         public int distanceAttack;
         public int hp;
         public int strength;
+        public DiceType power;
         public int luck;
         public int focus;
         public int defense;
@@ -17,9 +20,8 @@ namespace TinyTrails.SO
     }
     
     [System.Serializable]
-    public class AddittionalCharacterClassesSO
+    public class AddittionalStats
     {
-        public ClassesType classesType;
         public int distanceAttack;
         public int hp;
         public int strength;

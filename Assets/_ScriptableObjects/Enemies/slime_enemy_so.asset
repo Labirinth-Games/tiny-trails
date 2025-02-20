@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: Slime
   hp: 15
-  strength: 2
+  strength: 5
   Level: 1
   movement: 2
-  diceDamage: 2
+  diceDamage: 4
   actionPoints: 2
+  distanceAttack: 1
   isAggre: 0

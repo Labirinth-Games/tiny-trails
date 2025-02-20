@@ -58,7 +58,7 @@ namespace TinyTrails.Actions
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                GameManager.Instance.EventManager.Publisher<ActionPointType>(EventChannelType.OnActionFinish, ActionPointType.Attack);
+                GameManager.Instance.EventManager.Publisher<ActionPointType>(EventChannelType.OnActionFinish, ActionPointType.None);
                 DestroyHighlight();
             }
         }

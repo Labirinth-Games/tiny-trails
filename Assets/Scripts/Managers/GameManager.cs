@@ -70,8 +70,19 @@ namespace TinyTrails.Managers
         public TurnLabelUI TurnLabelUI;
         #endregion
 
+        public GameObject loadscreen;
+
+        void LoadSettingsPlayer()
+        {
+            string characterName = PlayerPrefs.GetString("character");
+
+            characterSheet.characterClass = Resources.Load<CharacterClassesSO>($"Classes/{characterName}");
+        }
+
         void Start()
         {
+            LoadSettingsPlayer();
+
             // UI
             ActionPointUI.Init();
             DefenseMeditorUI.Init();
@@ -91,7 +102,7 @@ namespace TinyTrails.Managers
 
 
             // spawn player
-            Player = Instantiate(characterSheet.body, (Vector2)MapManager.Zone.PlayerPosition.GetAbsolutePosition(), Quaternion.identity).GetComponent<Player>();
+            Player = Instantiate(characterSheet.characterClass.prefab, (Vector2)MapManager.Zone.PlayerPosition.GetAbsolutePosition(), Quaternion.identity).GetComponent<Player>();
             MapManager.Register(Player.transform.position, Player.Tile);
 
             Player.Init();
@@ -101,6 +112,10 @@ namespace TinyTrails.Managers
 
             // sounds
             AudioManager.Init();
+
+            Debug.Log($"Load {PlayerPrefs.GetString("character")}");
+
+            loadscreen.SetActive(false);
         }
     }
 }
