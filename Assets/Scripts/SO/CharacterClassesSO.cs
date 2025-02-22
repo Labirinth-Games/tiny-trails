@@ -9,7 +9,8 @@ namespace TinyTrails.SO
         public ClassesType classesType;
         public GameObject prefab;
         public Sprite sprite;
-        public int distanceAttack;
+        public int maxDistanceAttack;
+        public int minDistanceAttack;
         public int hp;
         public int strength;
         public DiceType power;
@@ -22,7 +23,8 @@ namespace TinyTrails.SO
     [System.Serializable]
     public class AddittionalStats
     {
-        public int distanceAttack;
+        public int minDistanceAttack;
+        public int maxDistanceAttack;
         public int hp;
         public int strength;
         public int luck;

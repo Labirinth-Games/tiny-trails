@@ -6,5 +6,6 @@ namespace TinyTrails.Types {
         Skill,
         Defense,
         Focus,
+        Movement,
     }
 }

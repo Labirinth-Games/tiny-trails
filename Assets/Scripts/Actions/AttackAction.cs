@@ -16,12 +16,19 @@ namespace TinyTrails.Actions
         public void Action()
         {
             _player = GameManager.Instance.Player;
-            List<Vector2> positions = GameManager.Instance.MapManager.GetAround(_player.transform.position, _player.Stats.DistanceAttack, new List<TileType>() { TileType.Floor, TileType.Way, TileType.Trap });
+            List<Vector2> positions = GameManager.Instance.MapManager.GetAround(
+                _player.transform.position,
+                _player.Stats.MinDistanceAttack,
+                _player.Stats.MaxDistanceAttack,
+                new List<TileType>() { TileType.Floor, TileType.Way, TileType.Trap }
+            );
 
             foreach (var position in positions)
             {
                 _instances.Add(UIRender.HighLightAttackRender(position, OnSelectTile));
             }
+
+            GameManager.Instance.EventManager.Publisher(EventChannelType.OnUIHighlightOpen);
         }
 
         void OnSelectTile(Vector2 position)
@@ -54,12 +61,16 @@ namespace TinyTrails.Actions
             _instances.Clear();
         }
 
+        void Start()
+        {
+            GameManager.Instance.EventManager.Subscriber<ActionPointType>(EventChannelType.OnActionFinish, (actionPointType) => DestroyHighlight());
+        }
+
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 GameManager.Instance.EventManager.Publisher<ActionPointType>(EventChannelType.OnActionFinish, ActionPointType.None);
-                DestroyHighlight();
             }
         }
     }

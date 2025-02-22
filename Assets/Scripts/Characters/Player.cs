@@ -16,6 +16,7 @@ namespace TinyTrails.Characters
         protected int AdditionalStrength = 0;
 
         int _health;
+        int _defense;
         int xp;
 
         public void Init()
@@ -26,6 +27,7 @@ namespace TinyTrails.Characters
             GameManager.Instance.MapManager.Register(transform.position, Tile);
 
             _health = Stats.HP;
+            _defense = Stats.Defense;
 
             // inicializer status
             GameManager.Instance.EventManager.Publisher<int>(EventChannelType.OnUIHPChange, _health);
@@ -50,24 +52,20 @@ namespace TinyTrails.Characters
         #endregion
 
         #region Actions
-        public override void Hit(int damageReceived)
+        public override void Hit(int damage)
         {
-            int damage = Stats.Defense - damageReceived;
+            int damageRemain = Stats.ReduceDefense(damage);
 
-            if (damage <= 0)
+            if (damageRemain > 0)
             {
-                UIRender.HitPushLabelUIRender("Miss", transform.position);
-                return;
+                _health -= damageRemain;
+                GameManager.Instance.EventManager.Publisher<int>(EventChannelType.OnUIHPChange, _health);
             }
-
-            _health -= Stats.Defense - damage;
 
             StartCoroutine(HitBlinkEffect());
 
             // render damage hit
             UIRender.HitPushLabelUIRender(damage.ToString(), transform.position);
-
-            GameManager.Instance.EventManager.Publisher<int>(EventChannelType.OnUIHPChange, _health);
 
             if (_health <= 0) Death();
 

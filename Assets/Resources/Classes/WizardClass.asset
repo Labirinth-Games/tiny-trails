@@ -13,13 +13,14 @@ MonoBehaviour:
   m_Name: WizardClass
   m_EditorClassIdentifier: 
   classesType: 4
-  prefab: {fileID: 0}
+  prefab: {fileID: 6035146925802177461, guid: 01b6c5ec5cab391448d0a17eced5efc3, type: 3}
   sprite: {fileID: 3946175408644549326, guid: aa3f0f280b9a36c46859597d94151a5b, type: 3}
-  distanceAttack: 1
-  hp: 20
-  strength: 5
-  power: 0
+  maxDistanceAttack: 3
+  minDistanceAttack: 1
+  hp: 18
+  strength: 10
+  power: 4
   luck: 1
-  focus: 5
-  defense: 3
-  movement: 2
+  focus: 4
+  defense: 5
+  movement: 3

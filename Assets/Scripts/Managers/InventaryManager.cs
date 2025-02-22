@@ -25,6 +25,12 @@ namespace TinyTrails.Managers
                 case ItemType.Defense:
                     GameManager.Instance.Player.Stats.SetDefense(item.value);
                     break;
+                case ItemType.Strength:
+                    GameManager.Instance.Player.Stats.SetStrength(item.value);
+                    break;
+                case ItemType.Movement:
+                    GameManager.Instance.Player.Stats.SetMovement(item.value);
+                    break;
             }
 
             GameManager.Instance.EventManager.Publisher(EventChannelType.OnActionFinish);

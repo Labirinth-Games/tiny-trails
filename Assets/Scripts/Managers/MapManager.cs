@@ -65,7 +65,7 @@ namespace TinyTrails.Managers
         /// <param name="magnitude">distancia do movimento de ataque</param>
         /// <param name="tileTypeValidate">tile types que sera validaddo, assim ignorando qualquer tile que n esteja na lista</param>
         /// <returns></returns>
-        public List<Vector2> GetAround(Vector2 origin, int magnitude, List<TileType> tileTypeValidate)
+        public List<Vector2> GetAround(Vector2 origin, int minDistance, int maxDistance, List<TileType> tileTypeValidate)
         {
             List<(Vector2 direction, bool canStop)> directions = new() {
                 (Vector2.up, false),
@@ -81,8 +81,10 @@ namespace TinyTrails.Managers
             List<Vector2> dontCanMove = new();
             List<Vector2> positions = new List<Vector2>();
 
-            for (var i = 1; i <= magnitude; i++)
+            for (var i = 1; i <= maxDistance; i++)
             {
+                if (i <= minDistance) continue;
+
                 foreach (var direction in directions)
                 {
                     Vector2 position = origin + direction.direction * i;

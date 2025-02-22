@@ -24,6 +24,8 @@ namespace TinyTrails.UI
         {
             display.SetActive(true);
 
+            if(item == null) return;
+
             title.text = item.displayName;
             description.text = item.desctiption;
             preview.sprite = item.sprite;

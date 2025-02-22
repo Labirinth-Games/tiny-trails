@@ -11,6 +11,7 @@ namespace TinyTrails.SO
         [TextArea]
         public string desctiption;
         public ItemType itemType;
+        public RarityType rarity;
         public int value;
 
     }

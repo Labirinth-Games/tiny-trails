@@ -13,13 +13,14 @@ MonoBehaviour:
   m_Name: RangerClass
   m_EditorClassIdentifier: 
   classesType: 2
-  prefab: {fileID: 0}
-  sprite: {fileID: 2185658209013986814, guid: f5f4095a3846c2e40a3620293a8a34bd, type: 3}
-  distanceAttack: 1
-  hp: 20
-  strength: 5
-  power: 0
+  prefab: {fileID: 6035146925802177461, guid: 44de9b81b0639ea4d9258cd8b6a310f7, type: 3}
+  sprite: {fileID: -6025282533267222325, guid: f5f4095a3846c2e40a3620293a8a34bd, type: 3}
+  maxDistanceAttack: 4
+  minDistanceAttack: 0
+  hp: 25
+  strength: 8
+  power: 4
   luck: 1
-  focus: 5
+  focus: 4
   defense: 3
   movement: 2

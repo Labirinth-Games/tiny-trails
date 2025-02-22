@@ -15,11 +15,12 @@ MonoBehaviour:
   classesType: 1
   prefab: {fileID: 6035146925802177461, guid: 970250aa2d1ad614395d7a1706419bf6, type: 3}
   sprite: {fileID: -8906833983067770631, guid: f05a96c427d6eec44a5a1b54b0f77011, type: 3}
-  distanceAttack: 1
-  hp: 20
-  strength: 5
+  maxDistanceAttack: 1
+  minDistanceAttack: 0
+  hp: 25
+  strength: 8
   power: 4
   luck: 1
-  focus: 5
+  focus: 4
   defense: 3
   movement: 2

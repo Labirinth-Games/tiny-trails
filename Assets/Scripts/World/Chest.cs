@@ -3,6 +3,7 @@ using TinyTrails.Behaviours;
 using TinyTrails.DTO;
 using TinyTrails.Enemies;
 using TinyTrails.Generators;
+using TinyTrails.Helpers;
 using TinyTrails.i18n;
 using TinyTrails.Interfaces;
 using TinyTrails.Managers;
@@ -23,9 +24,11 @@ namespace TinyTrails.World
         public void Open()
         {
             isOpen = true;
+            RarityType rarity = RarityHelper.Rarity();
 
-            var items = GameManager.Instance.WorldManager.GetItems();
-            _item = items[Random.Range(0, items.Count)];
+            var items = GameManager.Instance.WorldManager.GetItems().FindAll(f => f.rarity == rarity);
+
+            if (items.Count > 0) _item = items[Random.Range(0, items.Count)];
 
             GameManager.Instance.EventManager.Publisher<ItemSO>(EventChannelType.OnChestObtainItem, _item);
 

@@ -10,6 +10,7 @@ using TinyTrails.SO;
 using TinyTrails.Types;
 using TinyTrails.UI;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 namespace TinyTrails.Managers
 {
@@ -17,6 +18,7 @@ namespace TinyTrails.Managers
     {
         // this options remove after when create screen to choose/mount the character to play
         public CharacterSheetSO characterSheet;
+        public CharacterClassesSO characterClassesSO;
         public GameSettingsSO Settings;
         public ZoneConfigSO ZoneConfig;
         public bool IsPlayerDie = false;
@@ -61,7 +63,6 @@ namespace TinyTrails.Managers
         [Header("UI")]
         public ActionPointUI ActionPointUI;
         public DefenseMeditorUI DefenseMeditorUI;
-        public DiceContainerUI DiceContainerUI;
         public EndTurnUI EndTurnUI;
         public FocusMeditorUI FocusMeditorUI;
         public HPMeditorUI HPMeditorUI;
@@ -76,7 +77,10 @@ namespace TinyTrails.Managers
         {
             string characterName = PlayerPrefs.GetString("character");
 
-            characterSheet.characterClass = Resources.Load<CharacterClassesSO>($"Classes/{characterName}");
+            if (characterName != "")
+                characterSheet.characterClass = Instantiate(Resources.Load<CharacterClassesSO>($"Classes/{characterName}"));
+            else
+                characterSheet.characterClass = Instantiate(characterClassesSO);
         }
 
         void Start()
@@ -86,7 +90,6 @@ namespace TinyTrails.Managers
             // UI
             ActionPointUI.Init();
             DefenseMeditorUI.Init();
-            DiceContainerUI.Init();
             EndTurnUI.Init();
             FocusMeditorUI.Init();
             HPMeditorUI.Init();
@@ -116,6 +119,11 @@ namespace TinyTrails.Managers
             Debug.Log($"Load {PlayerPrefs.GetString("character")}");
 
             loadscreen.SetActive(false);
+        }
+
+        void OnDestroy()
+        {
+            PlayerPrefs.DeleteAll();
         }
     }
 }

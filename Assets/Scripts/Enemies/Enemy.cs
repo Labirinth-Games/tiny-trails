@@ -149,7 +149,7 @@ namespace TinyTrails.Enemies
             Player player = GameManager.Instance.Player;
             List<GameObject> instances = new();
 
-            List<Vector2> positions = GameManager.Instance.MapManager.GetAround(transform.position, Stats.distanceAttack, new List<TileType>() { TileType.Floor, TileType.Way, TileType.Trap });
+            List<Vector2> positions = GameManager.Instance.MapManager.GetAround(transform.position, Stats.minDistanceAttack, Stats.maxDistanceAttack, new List<TileType>() { TileType.Floor, TileType.Way, TileType.Trap });
             instances = UIRender.HighLightAttackEnemyRender(positions, player.transform.position);
 
             // aguada um tempo depois de mostrar a marcação e da dano no player

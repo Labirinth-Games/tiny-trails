@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 296c6d7100998c249a35e44c81e15c24, type: 3}
+  m_Name: musculus_minor_item_so
+  m_EditorClassIdentifier: 
+  displayName: Musculus Minot
+  sprite: {fileID: -1519362545565467897, guid: 9a1f5b451f94ecd4eafb1293fd839edf, type: 3}
+  desctiption: increases strength by +3
+  itemType: 2
+  rarity: 3
+  value: 3

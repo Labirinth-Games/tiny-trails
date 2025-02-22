@@ -13,8 +13,9 @@ namespace TinyTrails.Types
         OnUIRemainActionPointsChange,
         OnUILog,
         OnUIFocusChange,
-        OnUIHighlightRemove,
         OnUIDefenseChange,
+        OnUIHighlightCancel, // quando cancela uma ação que usa highlight 
+        OnUIHighlightOpen, // quando clica em ação que abre os highlights esse evento avisa sobre
 
         // Action
         OnActionFinish,

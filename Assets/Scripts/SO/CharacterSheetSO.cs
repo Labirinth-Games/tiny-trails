@@ -30,11 +30,19 @@ namespace TinyTrails.SO
             }
         }
 
-        public int DistanceAttack
+        public int MaxDistanceAttack
         {
             get
             {
-                return characterClass.distanceAttack + additionalStats.distanceAttack;
+                return characterClass.maxDistanceAttack + additionalStats.maxDistanceAttack;
+            }
+        }
+
+        public int MinDistanceAttack
+        {
+            get
+            {
+                return characterClass.minDistanceAttack + additionalStats.minDistanceAttack;
             }
         }
 
@@ -51,19 +59,25 @@ namespace TinyTrails.SO
             {
                 return characterClass.defense + additionalStats.defense;
             }
+            set
+            {
+                Defense = value;
+            }
         }
 
         public int Damage
         {
             get
             {
-                return characterClass.strength + DiceHelper.Roll(characterClass.power);
+                return characterClass.strength + additionalStats.strength + DiceHelper.Roll(characterClass.power);
             }
         }
         #endregion
 
         #region Sets
         public void SetHP(int hp) => additionalStats.hp += hp;
+        public void SetStrength(int value) => additionalStats.strength += value;
+        public void SetMovement(int value) => additionalStats.movement += value;
         public void ReduceHP(int hp) => additionalStats.hp -= hp;
         public void SetFocus(int value)
         {
@@ -74,6 +88,32 @@ namespace TinyTrails.SO
         {
             additionalStats.defense += value;
             GameManager.Instance.EventManager.Publisher<int>(EventChannelType.OnUIDefenseChange, Defense);
+        }
+
+        public int ReduceDefense(int value)
+        {
+            int remainDamager = 0;
+
+            if (value <= additionalStats.defense)
+            {
+                additionalStats.defense -= value;
+            }
+            else if (value - additionalStats.defense <= characterClass.defense)
+            {
+                additionalStats.defense = 0;
+                characterClass.defense -= value;
+            }
+            else
+            {
+                additionalStats.defense = 0;
+                characterClass.defense = 0;
+
+                remainDamager = value - characterClass.defense - additionalStats.defense;
+            }
+
+            GameManager.Instance.EventManager.Publisher<int>(EventChannelType.OnUIDefenseChange, Defense);
+
+            return remainDamager;
         }
         #endregion
     }

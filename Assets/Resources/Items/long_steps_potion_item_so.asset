@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 296c6d7100998c249a35e44c81e15c24, type: 3}
+  m_Name: long_steps_potion_item_so
+  m_EditorClassIdentifier: 
+  displayName: Long Steps
+  sprite: {fileID: -3276169677951023022, guid: c13db1a17143b814a9724f900db5558c, type: 3}
+  desctiption: increases movement by +1
+  itemType: 6
+  rarity: 2
+  value: 1

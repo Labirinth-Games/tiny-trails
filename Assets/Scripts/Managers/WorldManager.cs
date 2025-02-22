@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using TinyTrails.DTO;
 using TinyTrails.Enemies;
 using TinyTrails.IA;
@@ -28,15 +29,9 @@ namespace TinyTrails.Managers
         public GameObject GetChest() => chestPrefab;
         public GameObject GetOrb() => orbPrefab;
 
-        #region Spawns
-
-        public void SpawnBoss()
+        void Start()
         {
-            // var tile = GameManager.Instance.MapManager.GetTileRandom();
-            // tile.CreateGameObject(bosses[Random.Range(0, bosses.Count)], null, TileType.Enemy);
-
-            // worldIA.SetEnemy(tile);
+            items = Resources.LoadAll<ItemSO>("Items").ToList();
         }
-        #endregion
     }
 }
