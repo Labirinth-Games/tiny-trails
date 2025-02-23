@@ -13,7 +13,7 @@ namespace TinyTrails.UI
         private void SetTitleTurnPlayer() => label.text = MessageUI.TURN_PLAYER;
         private void SetTitleTurnWorld() => label.text = MessageUI.TURN_WORLD;
 
-        public void Init()
+        public void OnEnable()
         {
             SetTitleTurnPlayer();
             GameManager.Instance.EventManager.Subscriber(EventChannelType.OnTurnPlayerStart, SetTitleTurnPlayer);

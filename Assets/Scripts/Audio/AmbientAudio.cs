@@ -11,8 +11,7 @@ namespace TinyTrails.Sounds
         [SerializeField] AudioSource audioSource;
 
         [Header("Musics")]
-        [SerializeField] AudioClip exploreAmbientAudio;
-        [SerializeField] AudioClip battleAmbientAudio;
+        [SerializeField] List<AmbientAudioSettings> ambientAudioSettings;
 
         public AmbientAudio Init()
         {
@@ -21,10 +20,16 @@ namespace TinyTrails.Sounds
 
         public void Play(ContextGameType contextGameType)
         {
-            audioSource.clip = contextGameType == ContextGameType.Explore ? exploreAmbientAudio : battleAmbientAudio;
+            audioSource.clip = ambientAudioSettings.Find(f => f.audioType == contextGameType).audioClip;
             audioSource.loop = true;
 
             audioSource.Play();
         }
+    }
+
+    [System.Serializable]
+    public struct AmbientAudioSettings {
+        public ContextGameType audioType;
+        public AudioClip audioClip;
     }
 }

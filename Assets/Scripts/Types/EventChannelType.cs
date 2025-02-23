@@ -42,5 +42,9 @@ namespace TinyTrails.Types
 
         // Trap
         OnTrapTriggerActive,
+
+        // Game State
+        OnGameOver,
+        OnGameWin,
     }
 }

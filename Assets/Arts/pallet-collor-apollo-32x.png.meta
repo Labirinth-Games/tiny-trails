@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      pallet-collor-apollo-32x_0: -4835908079267166203
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

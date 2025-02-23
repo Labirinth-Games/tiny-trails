@@ -5,5 +5,6 @@ namespace TinyTrails.Types
         None,
         Battle,
         Explore,
+        Menu,
     }
 }

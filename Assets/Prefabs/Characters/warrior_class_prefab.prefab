@@ -75,7 +75,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1025875655
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: -8906833983067770631, guid: f05a96c427d6eec44a5a1b54b0f77011, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -119,6 +119,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8344980885296231861}
+  - component: {fileID: 2956453274725790191}
   - component: {fileID: 1669500912438975495}
   - component: {fileID: 1100196906176913153}
   - component: {fileID: 5101698305847335981}
@@ -145,6 +146,33 @@ Transform:
   - {fileID: 4781911778513067184}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2956453274725790191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6035146925802177461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a5606975708040428097c8e4f02a7f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tap:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2445010725436014561, guid: a2fe1d3fde70d424e878ccee98d1ef82, type: 3}
+        m_TargetAssemblyTypeName: TinyTrails.Controllers.ActionPointController, Assembly-CSharp
+        m_MethodName: MoveActionButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1669500912438975495
 MonoBehaviour:
   m_ObjectHideFlags: 0

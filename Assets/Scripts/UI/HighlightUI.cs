@@ -13,7 +13,7 @@ namespace TinyTrails.UI
 
         public void Init(Vector2 position, System.Action<Vector2> OnSelect)
         {
-            transform.position = position;
+            transform.position = new Vector3(position.x, position.y, -1);
             this.OnSelect = OnSelect;
 
             // animation

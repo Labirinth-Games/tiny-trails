@@ -9,9 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3024217479671756496}
+  - component: {fileID: -3790064727718931713}
+  - component: {fileID: -1349970847999497415}
   - component: {fileID: 5622558060020353011}
   - component: {fileID: 8105159059577216465}
-  - component: {fileID: -1349970847999497415}
   - component: {fileID: 4348896701557622873}
   m_Layer: 0
   m_Name: slime_enemy_prefab
@@ -35,6 +36,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-3790064727718931713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4414812789876818987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2753f4ac8791e8438890a4b2f4af64c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-1349970847999497415
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4414812789876818987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d99b2c40d5414f743b3cf800b261f865, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stats: {fileID: 11400000, guid: 57d1786aeffe68a4d80958cbfbbd9af9, type: 2}
+  animator: {fileID: 8105159059577216465}
+  moveStepAudios:
+  - {fileID: 8300000, guid: 686b091e747d37f4692780598fd7a397, type: 3}
+  - {fileID: 8300000, guid: 94c0a42dff0bde241a35945ecc6e7d0a, type: 3}
+  - {fileID: 8300000, guid: 9cc8baa59d1374e40b161858b2671ad3, type: 3}
+  attackAudios: []
 --- !u!212 &5622558060020353011
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -77,7 +109,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -668831823
-  m_SortingLayer: 1
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 950006275787789398, guid: 927663dcedaaf5c4eac3725fd05ef0cf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -112,25 +144,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &-1349970847999497415
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4414812789876818987}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d99b2c40d5414f743b3cf800b261f865, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  stats: {fileID: 11400000, guid: 57d1786aeffe68a4d80958cbfbbd9af9, type: 2}
-  animator: {fileID: 8105159059577216465}
-  moveStepAudios:
-  - {fileID: 8300000, guid: 686b091e747d37f4692780598fd7a397, type: 3}
-  - {fileID: 8300000, guid: 94c0a42dff0bde241a35945ecc6e7d0a, type: 3}
-  - {fileID: 8300000, guid: 9cc8baa59d1374e40b161858b2671ad3, type: 3}
-  attackAudios: []
 --- !u!61 &4348896701557622873
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -22,5 +22,10 @@ namespace TinyTrails.Managers
             _isPlayerTurn = true;
             GameManager.Instance.EventManager.Publisher(EventChannelType.OnTurnPlayerStart);
         }
+
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Space)) EndTurn();
+        }
     }
 }

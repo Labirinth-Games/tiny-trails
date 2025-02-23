@@ -39,6 +39,12 @@ namespace TinyTrails.Render
             _mapZoneinstances.Add(BossSpawnRender(zone, _container.transform));
         }
 
+        public void Clear()
+        {
+            _mapZoneinstances.ForEach(e => Destroy(e));
+            _mapZoneinstances.Clear();
+        }
+
         List<GameObject> WallSpawn(Zone zone, Transform _mapZoneContainer)
         {
             List<GameObject> instances = new();
@@ -96,7 +102,6 @@ namespace TinyTrails.Render
             return instances;
         }
 
-
         GameObject FloowSpawn(List<TileLayer> tileLayers, Transform _mapZoneContainer)
         {
             GameObject _container = new GameObject($"Floor Container");
@@ -129,7 +134,6 @@ namespace TinyTrails.Render
 
             return _container;
         }
-
 
         List<GameObject> EnemySpawnRender(Zone zone, Transform container)
         {

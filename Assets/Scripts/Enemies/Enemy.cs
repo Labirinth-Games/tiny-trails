@@ -133,9 +133,10 @@ namespace TinyTrails.Enemies
             if (_isFinishAction)
             {
                 _isFinishAction = false;
-                Debug.Log($"Enemy: {name}, terminou");
                 animator.SetBool("Walk", false);
                 GameManager.Instance.EventManager.Publisher(EventChannelType.OnEnemyFinishAction);
+                
+                Debug.Log($"Enemy: {name}, terminou");
             }
             else
             {

@@ -46,14 +46,14 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Items
+    uniqueID: 1847559521
+    locked: 0
   - name: Enemy
     uniqueID: 3626135473
     locked: 0
   - name: Player
     uniqueID: 3269091641
-    locked: 0
-  - name: Items
-    uniqueID: 1847559521
     locked: 0
   - name: World
     uniqueID: 1140715703

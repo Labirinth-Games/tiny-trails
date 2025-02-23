@@ -24,7 +24,7 @@ namespace TinyTrails.Managers
             UIAudio = uiAudio.Init();
 
             // play awake
-            AmbientAudio.Play(ContextGameType.Explore);
+            AmbientAudio.Play(ContextGameType.Menu);
 
             // subsicribers
             GameManager.Instance.EventManager.Subscriber<ContextGameType>(EventChannelType.OnContextGameChangeStatus, AmbientAudio.Play);

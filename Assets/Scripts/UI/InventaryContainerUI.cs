@@ -16,6 +16,8 @@ namespace TinyTrails.UI
         #region Button
         public void OpenButton()
         {
+            if (display.activeSelf) return;
+
             display.SetActive(true);
 
             foreach (ItemSO item in GameManager.Instance.InventaryManager.GetItems())

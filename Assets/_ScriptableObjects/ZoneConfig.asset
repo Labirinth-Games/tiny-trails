@@ -18,7 +18,7 @@ MonoBehaviour:
   minSpaceBeetweenSubZones: 1
   maxSpaceBeetweenSubZones: 1
   scaleTilePosition: 1
-  roomTypes: 020000000200000002000000
+  roomTypes: 030000000300000003000000
   canSpawnPlayerTogetherDoor: 0
   amountEnemies: 0
   amountTraps: 0.25

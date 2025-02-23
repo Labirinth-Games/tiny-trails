@@ -40,6 +40,7 @@ namespace TinyTrails.Managers
         public WorldManager WorldManager;
         public ContextGameManager ContextGameManager;
         public AudioManager AudioManager;
+        public MenuManager MenuManager;
         #endregion
 
         #region Controllers
@@ -71,21 +72,12 @@ namespace TinyTrails.Managers
         public TurnLabelUI TurnLabelUI;
         #endregion
 
-        public GameObject loadscreen;
-
-        void LoadSettingsPlayer()
+        public void StartGame(CharacterClassesSO playerClass)
         {
-            string characterName = PlayerPrefs.GetString("character");
+            MenuManager.CloseMenus();
+            MenuManager.OpenGameHud();
 
-            if (characterName != "")
-                characterSheet.characterClass = Instantiate(Resources.Load<CharacterClassesSO>($"Classes/{characterName}"));
-            else
-                characterSheet.characterClass = Instantiate(characterClassesSO);
-        }
-
-        void Start()
-        {
-            LoadSettingsPlayer();
+            characterSheet.characterClass = playerClass;
 
             // UI
             ActionPointUI.Init();
@@ -95,17 +87,16 @@ namespace TinyTrails.Managers
             HPMeditorUI.Init();
             LogUI.Init();
             ObtainItemUI.Init();
-            TurnLabelUI.Init();
+            // TurnLabelUI.Init();
 
             // Managers
             MapManager.CreateMap();
             FocusController.Init(characterSheet.Focus);
-            ContextGameManager.Init();
             WorldIA.Init();
 
-
             // spawn player
-            Player = Instantiate(characterSheet.characterClass.prefab, (Vector2)MapManager.Zone.PlayerPosition.GetAbsolutePosition(), Quaternion.identity).GetComponent<Player>();
+            Vector3 pos = (Vector3Int)MapManager.Zone.PlayerPosition.GetAbsolutePosition() + Vector3Int.forward * -1;
+            Player = Instantiate(characterSheet.characterClass.prefab, pos, Quaternion.identity).GetComponent<Player>();
             MapManager.Register(Player.transform.position, Player.Tile);
 
             Player.Init();
@@ -113,17 +104,25 @@ namespace TinyTrails.Managers
             // Actions
             DefenseAction.Init();
 
-            // sounds
-            AudioManager.Init();
-
-            Debug.Log($"Load {PlayerPrefs.GetString("character")}");
-
-            loadscreen.SetActive(false);
+            MenuManager.CloseLoadScreen();
+            EventManager.Publisher<ContextGameType>(EventChannelType.OnContextGameChangeStatus, ContextGameType.Explore);
         }
 
-        void OnDestroy()
+        public void EndGame()
         {
-            PlayerPrefs.DeleteAll();
+            MapRender.Clear();
+
+            MenuManager.CloseGameHud();
+            MenuManager.Navigate(MenuType.Main_Menu);
+            EventManager.Publisher<ContextGameType>(EventChannelType.OnContextGameChangeStatus, ContextGameType.Menu);
+        }
+
+        void Start()
+        {
+            ContextGameManager.Init();
+
+            // sounds
+            AudioManager.Init();
         }
     }
 }

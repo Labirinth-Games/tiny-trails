@@ -88,6 +88,7 @@ namespace TinyTrails.Characters
             if (_health > 0) return;
 
             GameManager.Instance.EventManager.Publisher<string>(EventChannelType.OnUILog, "your death!!");
+            GameManager.Instance.EventManager.Publisher(EventChannelType.OnGameOver);
             GameManager.Instance.IsPlayerDie = true;
 
             Destroy(gameObject);
